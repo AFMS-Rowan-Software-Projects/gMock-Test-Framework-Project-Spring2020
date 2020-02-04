@@ -1,0 +1,2 @@
+# gMock-Test-Framework-Project-Spring2020
+The students will develop a C++ application that will utilize the gMock unit test framework as a part of the development process. The application will be simple in nature. We suggest a scheduler application; one that might be used for scheduling classes or vacation rentals. The idea is to create an application that will have many possible test cases. The team will employ Google's framework for writing and using C++ mock classes. It will help them derive better designs and write better tests.
