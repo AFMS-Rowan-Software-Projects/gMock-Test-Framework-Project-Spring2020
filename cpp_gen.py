@@ -26,11 +26,12 @@ class Method:
     def __init__(self, return_type, name):
         self.return_type = return_type
         self.name = name
+        self.return_statement = ''
         self.statements = []
         self.locals = {}
 
     def generate_statements(self):
-        return ''.join(self.statements)
+        return ''.join([*self.statements, self.return_statement])
 
     def add_locals(self, type, name, init_value):
         # self.locals[]
@@ -41,7 +42,7 @@ class Method:
         self.statements.append('\tcout << {};\n'.format(value))
 
     def add_return(self, value):
-        self.statements.append('\treturn {};\n'.format(value))
+        self.return_statement = '\treturn {};\n'.format(value)
 
     def generate(self):
         return "{} {}()\n{{\n{}\n}}".format(self.return_type,
