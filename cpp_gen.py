@@ -13,6 +13,9 @@ class CppFile:
     def add_method(self, method):
         self.methods.append(method.generate())
 
+    def add_macro_function(self, macro_func):
+        self.methods.append(macro_func.generate())
+
     def generate(self):
         result = ''
         result += ''.join(self.includes)
@@ -23,30 +26,62 @@ class CppFile:
 
 
 class Method:
-    def __init__(self, return_type, name):
+    def __init__(self, return_type, name, *args):
         self.return_type = return_type
         self.name = name
+        self.args = args
         self.return_statement = ''
         self.statements = []
-        self.locals = {}
-
-    def generate_statements(self):
-        return ''.join([*self.statements, self.return_statement])
-
-    def add_locals(self, type, name, init_value):
-        # self.locals[]
-        pass
 
     def add_cout(self, value):
         value = '"{}"'.format(value).replace("\n", "\\n")
-        self.statements.append('\tcout << {};\n'.format(value))
+        self.statements.append('\tcout << {} << endl;\n'.format(value))
 
     def add_return(self, value):
         self.return_statement = '\treturn {};\n'.format(value)
 
+    def add_method_call(self, name, *args):
+        self.statements.append('\t{}({});\n'.format(name,
+                                                    self._convert_args_to_str(
+                                                        args)))
+
     def generate(self):
-        return "{} {}()\n{{\n{}\n}}".format(self.return_type,
-                                                self.name,
-                                                self.generate_statements())
+        return "{} {}({})\n{{\n{}\n}}\n\n".format(self.return_type,
+                                                  self.name,
+                                                  self._convert_args_to_str(
+                                                      self.args),
+                                                  self._generate_statements())
+
+    def _convert_args_to_str(self, args):
+        return ','.join(str(x) for x in args)
+
+    def _generate_statements(self):
+        return ''.join([*self.statements, self.return_statement])
 
 
+class MacroFunction:
+    def __init__(self, name, *args):
+        self.name = name
+        self.args = args
+        self.statements = []
+
+    def add_cout(self, value):
+        value = '"{}"'.format(value).replace("\n", "\\n")
+        self.statements.append('\tcout << {} << endl;\n'.format(value))
+
+    def add_macro_call(self, name, *args):
+        self.statements.append('\t{}({});\n'.format(name,
+                                                    self._convert_args_to_str(
+                                                        args)))
+
+    def generate(self):
+        return "{}({})\n{{\n{}\n}}\n\n".format(self.name,
+                                               self._convert_args_to_str(
+                                                   self.args),
+                                               self._generate_statements())
+
+    def _convert_args_to_str(self, args):
+        return ','.join(str(x) for x in args)
+
+    def _generate_statements(self):
+        return ''.join(self.statements)
