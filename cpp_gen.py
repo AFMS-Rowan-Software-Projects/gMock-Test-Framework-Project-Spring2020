@@ -41,11 +41,7 @@ class CodeBlock:
         self.statements = []
 
     def add_statement(self, expression, has_semicolon=True):
-        if has_semicolon:
-            semicolon = ';'
-        else:
-            semicolon = ''
-
+        semicolon = ';' if has_semicolon else ''
         self.statements.append('\t{}{}\n'.format(expression, semicolon))
 
     def add_comment(self, comment):
