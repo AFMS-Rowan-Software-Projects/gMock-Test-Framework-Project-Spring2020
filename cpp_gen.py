@@ -25,6 +25,11 @@ class CppFile:
 
         return result
 
+    def write_to_file(self, filename):
+        filename = '{}.cpp'.format(filename.split('.')[0])
+        with open(filename, 'w') as file:
+            file.write(self.generate())
+
 
 # static methods
 def convert_params_to_str(params, sep=', '):

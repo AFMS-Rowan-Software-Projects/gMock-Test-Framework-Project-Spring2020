@@ -20,4 +20,4 @@ main_function.add_run_all_tests_and_return()
 # add methods
 cpp.add_component(test_one)
 cpp.add_component(main_function)
-print(cpp.generate())
+cpp.write_to_file('simple_test_suite')

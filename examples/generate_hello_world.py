@@ -8,4 +8,5 @@ cpp = CppFile()
 cpp.add_include('iostream')
 cpp.add_namespace('std')
 cpp.add_component(func_1)
-print(cpp.generate())
+cpp.write_to_file('hello_world')
+
