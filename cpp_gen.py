@@ -74,7 +74,7 @@ class Function(CodeBlock):
 
     def _generate_header(self, return_type, name, *params):
         params_as_str = convert_params_to_str(params)
-        return '{} {}({})'.format(return_type, name, params_as_str)
+        return '{} {}({}) '.format(return_type, name, params_as_str)
 
     def add_return(self, expression):
         return_and_expr = 'return {}'.format(expression)
@@ -94,7 +94,7 @@ class MacroFunction(CodeBlock):
 
     def _generate_header(self, name, *params):
         params_as_str = convert_params_to_str(params)
-        return '{}({})'.format(name, params_as_str)
+        return '{}({}) '.format(name, params_as_str)
 
     def generate(self):
         return self.header + CodeBlock.generate(self)

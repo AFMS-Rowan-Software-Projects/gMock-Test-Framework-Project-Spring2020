@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int main(){
+int main() {
 	// this is a comment
 	cout << "Hello world!" << endl;
 }
