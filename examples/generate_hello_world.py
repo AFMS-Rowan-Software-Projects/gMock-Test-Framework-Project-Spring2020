@@ -1,19 +1,11 @@
-from cpp_gen import CppFile, Method
+from cpp_gen import CppFile, Function
 
+func_1 = Function('int', 'main')
+func_1.add_comment('this is a comment')
+func_1.add_cout('Hello world!')
 
-f = CppFile()
-
-# add includes
-f.add_include('iostream')
-f.add_namespace('std')
-
-# main method definition
-main_method = Method('int', 'main')
-main_method.add_cout('Hello World1!')
-main_method.add_cout('Hello World2!')
-main_method.add_cout('Hello World3!')
-main_method.add_return(0)
-
-# add methods
-f.add_method(main_method)
-print(f.generate())
+cpp = CppFile()
+cpp.add_include('iostream')
+cpp.add_namespace('std')
+cpp.add_component(func_1)
+print(cpp.generate())

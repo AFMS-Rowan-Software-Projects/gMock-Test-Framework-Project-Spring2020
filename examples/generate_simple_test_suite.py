@@ -1,23 +1,23 @@
-from cpp_gen import CppFile, Method, MacroFunction
+from cpp_gen import CppFile, Function, MacroFunction
 
-
-f = CppFile()
+cpp = CppFile()
 
 # add includes
-f.add_include('iostream')
-f.add_include('gtest/gtest.h')
-f.add_namespace('std')
+cpp.add_include('iostream')
+cpp.add_include('gtest/gtest.h')
+cpp.add_namespace('std')
 
 # test definition
 test_one = MacroFunction('TEST', 'MyTestSuite', 'TestOne')
-test_one.add_macro_call('ASSERT_EQ', '1', '2')
+test_one.add_assert_eq(1, 1)
 
-# main method definition
-main_method = Method('int', 'main', 'int argc', 'char **argv')
-main_method.add_method_call('testing::InitGoogleTest', '&argc', 'argv')
-main_method.add_return('RUN_ALL_TESTS()')
+# main function definition
+main_function = Function('int', 'main', 'int argc', 'char **argv')
+main_function.add_function_call('InitGoogleTest', '&argc', 'argv',
+                                namespace='testing')
+main_function.add_run_all_tests_and_return()
 
 # add methods
-f.add_macro_function(test_one)
-f.add_method(main_method)
-print(f.generate())
+cpp.add_component(test_one)
+cpp.add_component(main_function)
+print(cpp.generate())
