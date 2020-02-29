@@ -36,13 +36,37 @@ def convert_params_to_str(params, sep=', '):
     return '{}'.format(sep).join(str(x) for x in params)
 
 
-class CodeBlock:
+class StatementGroup:
     def __init__(self):
         self.statements = []
+        self.statements_before_specifiers = None
+        self.public_specifier = None
+        self.private_specifier = None
 
-    def add_statement(self, expression, has_semicolon=True):
+    def add_statement(self, expression, indent=True, has_semicolon=True):
+        indent = '\t' if indent else ''
         semicolon = ';' if has_semicolon else ''
-        self.statements.append('\t{}{}\n'.format(expression, semicolon))
+        self.statements.append(
+            '{}{}{}\n'.format(indent, expression, semicolon))
+
+    def preserve_statements_before_specifiers(self):
+        if self.statements_before_specifiers is None:
+            self.statements_before_specifiers = self.statements
+            self.statements = []
+
+    def add_public_specifier(self):
+        self.preserve_statements_before_specifiers()
+        self.public_specifier = StatementGroup()
+        self.public_specifier.add_statement('public:', indent=False,
+                                            has_semicolon=False)
+        return self.public_specifier
+
+    def add_private_specifier(self):
+        self.preserve_statements_before_specifiers()
+        self.private_specifier = StatementGroup()
+        self.private_specifier.add_statement('private:', indent=False,
+                                             has_semicolon=False)
+        return self.private_specifier
 
     def add_comment(self, comment):
         slashes_with_comment = '// ' + comment
@@ -63,8 +87,54 @@ class CodeBlock:
         self.add_function_call('ASSERT_EQ', val_1, val_2)
 
     def generate(self):
-        all_statements = ''.join(self.statements)
-        return '{{\n{}}}\n\n'.format(all_statements)
+        if self.statements_before_specifiers:
+            # do not change self.statements_before_specifiers incase
+            # the generate() method is called more than once
+            before_statements = self.statements_before_specifiers
+        else:
+            before_statements = ['']
+
+        if self.public_specifier:
+            public_statements = self.public_specifier.generate()
+        else:
+            public_statements = ['']
+
+        if self.private_specifier:
+            private_statements = self.private_specifier.generate()
+        else:
+            private_statements = ['']
+
+        return ''.join(
+            [*before_statements, *public_statements, *private_statements,
+             *self.statements])
+
+
+class CodeBlock(StatementGroup):
+    def __init__(self, has_semicolon=False):
+        StatementGroup.__init__(self)
+        self.has_semicolon = has_semicolon
+
+    def generate(self):
+        semicolon = ';' if self.has_semicolon else ''
+        all_statements = StatementGroup.generate(self)
+        return '{{\n{}}}{}\n\n'.format(all_statements, semicolon)
+
+
+class CppClass(CodeBlock):
+    def __init__(self, name, base_class=None):
+        CodeBlock.__init__(self, has_semicolon=True)
+        self.header = self._generate_header(name, base_class)
+
+    def _generate_header(self, name, base_class):
+        if base_class:
+            derivation_list = ' : public {}'.format(base_class)
+        else:
+            derivation_list = ''
+
+        return 'class {}{} '.format(name, derivation_list)
+
+    def generate(self):
+        return self.header + CodeBlock.generate(self)
 
 
 class Function(CodeBlock):
