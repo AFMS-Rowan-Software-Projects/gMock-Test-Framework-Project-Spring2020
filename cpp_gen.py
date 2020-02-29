@@ -68,8 +68,9 @@ class StatementGroup:
                                              has_semicolon=False)
         return self.private_specifier
 
-    def add_comment(self, comment):
-        slashes_with_comment = '// ' + comment
+    def add_comment(self, comment, newline=False):
+        newline = '\n' if newline else ''
+        slashes_with_comment = '// ' + comment + newline
         self.add_statement(slashes_with_comment, has_semicolon=False)
 
     def add_cout(self, message):
