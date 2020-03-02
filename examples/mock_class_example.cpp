@@ -1,5 +1,3 @@
-
-
 class MOCK_TestClass {
 public:
 	MOCK_METHOD(bool, CheckOne, (bool, int, String));
