@@ -23,7 +23,7 @@ class MockClass:
                 statement = statement + "))"
         else:
             if const:
-                statement = statement + "(const))"
+                statement = statement + ", (const))"
             else:
                 statement = statement + ")"
 
