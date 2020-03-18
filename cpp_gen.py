@@ -90,7 +90,7 @@ class StatementGroup:
         self.add_statement('NiceMock<mock_class_name> var_name')
     def add_nice_mock(self, class_name):
         self.add_statement("NiceMock<" + class_name + "> var_name")
-        
+
     def add_strict_mock(self):
         self.add_statement('StrictMock<mock_class_name> var_name')
     def add_strict_mock(self, class_name):
