@@ -86,6 +86,16 @@ class StatementGroup:
     def add_assert_eq(self, val_1, val_2):
         self.add_function_call('ASSERT_EQ', val_1, val_2)
 
+    def add_nice_mock(self):
+        self.add_statement('NiceMock<mock_class_name> var_name')
+    def add_nice_mock(self, class_name):
+        self.add_statement("NiceMock<" + class_name + "> var_name")
+        
+    def add_strict_mock(self):
+        self.add_statement('StrictMock<mock_class_name> var_name')
+    def add_strict_mock(self, class_name):
+        self.add_statement("StrictMock<" + class_name + "> var_name")
+
     def generate(self):
         if self.statements_before_specifiers:
             # do not change self.statements_before_specifiers incase
