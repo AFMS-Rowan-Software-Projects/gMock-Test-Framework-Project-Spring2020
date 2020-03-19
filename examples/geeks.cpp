@@ -1,17 +1,54 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
 
-class Car {
-  public:
-    int speed(int maxSpeed);
-};
+#include"Service.h"
 
-int Car::speed(int maxSpeed) {
-  return maxSpeed;
+Service * first = new Service();
+
+int getCommand(){
+    cout<<"Choose one of the following commands: "<<endl;
+    cout<<"1. Add new service"<<endl;
+    cout<<"2. Add new subservice"<<endl;
+    cout<<"3. Add parent to a service"<<endl;
+    cout<<"4. Delete a service(and it's subservices)"<<endl;
+    cout<<"Your Choice: ";
+    int c;
+    cin>>c;
+    return c;
+}
+void addService(){
+    first->add();
 }
 
-int main() {
-  Car myObj; // Create an object of Car
-  cout << myObj.speed(200); // Call the method with an argument
-  return 0;
+void addSubService(){
+    cout<<"Let's choose the parent first: "<<endl;
+    int * one = new int;
+    *one = 1;
+    first->print(one,0);
+    cout<<"0. here."<<endl<<"> ";
+    int id;
+    cin>>id;
+    Service * f = first->find(one,id);
+
+}
+
+void addParentToService(){
+
+}
+
+void doCommand(int c){
+    switch(c){
+    case 1:
+        addService();
+        break;
+    case 2:
+        addSubService();
+        break;
+    case 3:
+        addParentToService();
+        break;
+    case 4:
+        //deleteService();
+        break;
+    }
 }

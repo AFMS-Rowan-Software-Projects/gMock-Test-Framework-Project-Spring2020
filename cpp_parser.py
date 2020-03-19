@@ -18,7 +18,11 @@ class CPPParser:
 
     def _parse_class(self):
         result = re.findall(CLASS_EXP, self.cpp_file.read())
-        self.detected_class = result[0]
+        if result:
+            self.detected_class = result[0]
+        else:
+            raise ValueError('No class detected in file')
+
         return result
 
     def _parse_method_headers(self):
