@@ -1,35 +1,17 @@
-// This is some random cpp file from https://www.geeksforgeeks.org/c-classes-and-objects/
-
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
-class Geeks
-{
-    // Access specifier
-    public:
 
-    // Data Members
-    string geekname;
-
-    // Member Functions()
-    const void printName()
-    {
-       cout << "Geekname is: " << geekname;
-    }
-
-    int doNothing(int arg1, double arg2) {
-        // this is just to test the parser
-    }
+class Car {
+  public:
+    int speed(int maxSpeed);
 };
 
+int Car::speed(int maxSpeed) {
+  return maxSpeed;
+}
+
 int main() {
-
-    // Declare an object of class geeks
-    Geeks obj1;
-
-    // accessing data member
-    obj1.geekname = "Abhi";
-
-    // accessing member function
-    obj1.printname();
-    return 0;
+  Car myObj; // Create an object of Car
+  cout << myObj.speed(200); // Call the method with an argument
+  return 0;
 }
