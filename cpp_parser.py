@@ -2,7 +2,7 @@ import re
 
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*{[\s\S]*?\n};?'
-METHOD_HEADER_EXP = r'(const\s|virtual\s)*(\w+\s[\w:]+\([\w\s,]*\)\s*)(const\s*)*({|;)'
+METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\([\w\s,]*\)\s*)(const\s*)*({|;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
 
@@ -82,6 +82,5 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
-
 
 
