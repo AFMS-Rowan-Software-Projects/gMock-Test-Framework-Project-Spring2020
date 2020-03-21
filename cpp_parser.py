@@ -74,6 +74,16 @@ class CPPParser:
 
         return self.methods
 
+    def print_detected_methods(self):
+        # should say something special if no methods were detected
+        for method in self.methods:
+            print('Info for method {}:'.format(method.name))
+            print('Return type: {}'.format(method.return_type))
+            print('Is virtual: {}'.format(method.is_virtual))
+            print('Is constant: {}'.format(method.is_constant))
+            print('Parameters: {}'.format(method.params))
+            print('')
+
 
 class DetectedMethod:
     def __init__(self, return_type, name, is_virtual, is_constant, params):
@@ -82,5 +92,3 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
-
-
