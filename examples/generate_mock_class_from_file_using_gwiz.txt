@@ -1,4 +1,4 @@
-Running the following in the terminal from the root directory of the repository: "python3 gwiz.py examples/geeks.py"
+Running the following in the terminal from the root directory: "python3 gwiz.py examples/geeks.py"
 Will write a file in the same directory called "MOCK_Geeks.cpp"
 That file will contain the following:
 
