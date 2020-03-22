@@ -2,6 +2,7 @@ import re
 
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*{[\s\S]*?\n};?'
+CLASS_NAME_EXP = r'class \w+'
 METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\([\w\s,]*\)\s*)(const\s*)*({|;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
@@ -13,6 +14,7 @@ class CPPParser:
     def __init__(self, cpp_file):
         self.cpp_file = cpp_file
         self.detected_class = None
+        self.detected_class_name = None
         self.detected_method_headers = None
         self.methods = []
 
@@ -20,10 +22,15 @@ class CPPParser:
         result = re.findall(CLASS_EXP, self.cpp_file.read())
         if result:
             self.detected_class = result[0]
+            self.detected_class_name = self._detect_class_name(self.detected_class)
         else:
             raise ValueError('No class detected in file')
 
         return result
+
+    def _detect_class_name(self, detected_class):
+        class_header = re.findall(CLASS_NAME_EXP, detected_class)[0]
+        return class_header.strip().split(" ")[-1]
 
     def _parse_method_headers(self):
 
