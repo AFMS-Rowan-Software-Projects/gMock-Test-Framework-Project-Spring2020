@@ -14,7 +14,6 @@ def create_mock_class_from_file(file_obj):
     mock_class = MockClass(parser.detected_class_name)
     for m in parser.methods:
         params = [] if not m.params else m.params
-        print('params: {}'.format(params))
         mock_class.add_mock_method(m.return_type, m.name, params,
                                    m.is_virtual, m.is_constant)
 
