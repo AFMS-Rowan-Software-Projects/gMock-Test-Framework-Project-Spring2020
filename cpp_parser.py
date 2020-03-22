@@ -3,7 +3,7 @@ import re
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*{[\s\S]*?\n};?'
 CLASS_NAME_EXP = r'class \w+'
-METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\([\w\s,]*\)\s*)(const\s*)*({|;)'
+METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(const\s*)*({|;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
 
