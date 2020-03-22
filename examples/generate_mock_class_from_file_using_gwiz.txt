@@ -1,0 +1,9 @@
+Running the following in the terminal: "python3 gwiz.py examples/geeks.py"
+Will write a file in the same directory called "MOCK_Geeks.cpp"
+That file will contain the following:
+
+class MOCK_Geeks {
+public:
+	MOCK_METHOD(void, printName, (), (const));
+	MOCK_METHOD(int, doNothing, (int arg1, double arg2));
+};
