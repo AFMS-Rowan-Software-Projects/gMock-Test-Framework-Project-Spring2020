@@ -1,6 +1,8 @@
-import ctypes
+import subprocess
 
 
-_test = ctypes.CDLL('./hello_world.so')
+print("hello")
 
-_test.test()
+process = subprocess.call('hello_world', shell=False)
+
+print(process)
