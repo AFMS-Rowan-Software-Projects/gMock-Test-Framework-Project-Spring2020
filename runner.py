@@ -3,8 +3,8 @@ import platform
 import re
 
 
-totalRegex = re.compile(r'\[==========\] Running [0-9]+ tests')
-passedRegex = re.compile(r'\[  PASSED  \] [0-9]+ tests')
+totalRegex = re.compile(r'\[==========\] Running [0-9]+ test')
+passedRegex = re.compile(r'\[  PASSED  \] [0-9]+ test')
 numRegex = re.compile(r'[0-9]+')
 
 
