@@ -3,9 +3,9 @@ import platform
 import re
 
 
-totalRegex = re.compile(r'[==========] Running [0-9]* tests')
-passedRegex = re.compile(r'[  PASSED  ] [0-9]* tests')
-numRegex = re.compile(r'[0-9]*')
+totalRegex = re.compile(r'\[==========\] Running [0-9]+ tests')
+passedRegex = re.compile(r'\[  PASSED  \] [0-9]+ tests')
+numRegex = re.compile(r'[0-9]+')
 
 
 def run_tests(filename, testname=None, subtestname=None):
@@ -37,7 +37,11 @@ def run_tests(filename, testname=None, subtestname=None):
 
 
 def get_basic_stats(results):
-    total = int(numRegex.search(totalRegex.search(results)))
-    passed = int(numRegex.search(passedRegex.search(results)))
-    percent = (passed/total)*100
+    total = int(numRegex.search(totalRegex.search(str(results)).group()).group())
+    passed = int(numRegex.search(passedRegex.search(str(results)).group()).group())
+    if total == 0:
+        percent = 100;
+    else:
+        percent = (passed / total) * 100
     print("{}/{} ({}%) of the tests passed.".format(passed, total, percent))
+
