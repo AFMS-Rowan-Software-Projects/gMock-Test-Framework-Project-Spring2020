@@ -4,7 +4,6 @@ from cpp_parser import CPPParser
 
 def create_mock_class_from_file(file_obj):
     # format file
-    # currently not working so I am ommiting this step
 
     # parse file
     parser = CPPParser(file_obj)
