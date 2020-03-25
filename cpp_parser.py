@@ -6,6 +6,7 @@ CLASS_NAME_EXP = r'class \w+'
 METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(const\s*)*({|;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
+PUBLIC_BLOCK_EXP = r'public:.*[\s\S]*};'
 
 KEYWORDS = ['const', 'virtual']
 
@@ -22,7 +23,8 @@ class CPPParser:
         result = re.findall(CLASS_EXP, self.cpp_file.read())
         if result:
             self.detected_class = result[0]
-            self.detected_class_name = self._detect_class_name(self.detected_class)
+            self.detected_class_name = self._detect_class_name(
+                self.detected_class)
         else:
             raise ValueError('No class detected in file')
 
@@ -32,9 +34,9 @@ class CPPParser:
         class_header = re.findall(CLASS_NAME_EXP, detected_class)[0]
         return class_header.strip().split(" ")[-1]
 
-    def _parse_method_headers(self):
-
-        matches = re.findall(METHOD_HEADER_EXP, self.detected_class)
+    # parses method headers from block of code
+    def _parse_method_headers(self, block):
+        matches = re.findall(METHOD_HEADER_EXP, block)
         result = [''.join(r).strip() for r in matches]
         self.detected_method_headers = result
         return result
@@ -62,34 +64,65 @@ class CPPParser:
 
         return result
 
-    def detect_methods(self):
+    # parses public block from block of code
+    def _parse_public_block(self, block):
+        matches = re.findall(PUBLIC_BLOCK_EXP, block)
+        result = [''.join(r).strip() for r in matches]
+        self.detected_method_headers = result
+        return result
 
+    def _ensure_class_detected(self):
         if self.detected_class is None:
             self._parse_class()
-        if self.detected_method_headers is None:
-            self._parse_method_headers()
 
-        for header in self.detected_method_headers:
-            method = DetectedMethod(
+    def _convert_headers_to_detect_methods(self, headers):
+        result = []
+        for header in headers:
+            result.append(DetectedMethod(
                 return_type=self._parse_return_type(header),
                 name=self._parse_method_name(header),
                 is_virtual=self._parse_is_virtual(header),
                 is_constant=self._parse_is_const(header),
                 params=self._parse_method_args(header)
-            )
-            self.methods.append(method)
+            ))
+
+        return result
+
+    # detects methods from class
+    def detect_methods(self):
+        self._ensure_class_detected()
+        self._parse_method_headers(self.detected_class)
+        self.methods.extend(self._convert_headers_to_detect_methods(
+            self.detected_method_headers))
 
         return self.methods
 
-    def print_detected_methods(self):
-        # should say something special if no methods were detected
-        for method in self.methods:
-            print('Info for method {}:'.format(method.name))
-            print('Return type: {}'.format(method.return_type))
-            print('Is virtual: {}'.format(method.is_virtual))
-            print('Is constant: {}'.format(method.is_constant))
-            print('Parameters: {}'.format(method.params))
-            print('')
+    # Print out the info for detect methods class
+    def print_detected_method_info(self, methods):
+        if not methods:
+            print('No methods were given')
+        else:
+            for method in methods:
+                # probably should loop through attributes instead of hard coding
+                print('Info for method {}:'.format(method.name))
+                print('Return type: {}'.format(method.return_type))
+                print('Is virtual: {}'.format(method.is_virtual))
+                print('Is constant: {}'.format(method.is_constant))
+                print('Parameters: {}'.format(method.params))
+                print('')
+
+    # detects public methods from class
+    def detect_public_methods(self):
+        self._ensure_class_detected()
+        result = re.findall(PUBLIC_BLOCK_EXP, self.detected_class)
+        if result:
+            public_block = result[0]
+        else:
+            raise ValueError('No public block detected in the class {}'
+                             .format(self.detected_class_name))
+
+        headers = self._parse_method_headers(public_block)
+        return self._convert_headers_to_detect_methods(headers)
 
 
 class DetectedMethod:
@@ -99,3 +132,9 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
+
+
+fileobj = open('examples/geeks.cpp')
+parser = CPPParser(fileobj)
+public_methods = parser.detect_public_methods()
+parser.print_detected_method_info(public_methods)
