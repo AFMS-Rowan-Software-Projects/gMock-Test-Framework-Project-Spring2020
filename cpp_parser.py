@@ -18,6 +18,7 @@ class CPPParser:
         self.detected_class_name = None
         self.detected_method_headers = None
         self.methods = []
+        self.public_methods = []
 
     def _parse_class(self):
         result = re.findall(CLASS_EXP, self.cpp_file.read())
@@ -122,7 +123,7 @@ class CPPParser:
                              .format(self.detected_class_name))
 
         headers = self._parse_method_headers(public_block)
-        return self._convert_headers_to_detect_methods(headers)
+        self.public_methods = self._convert_headers_to_detect_methods(headers)
 
 
 class DetectedMethod:
@@ -132,9 +133,3 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
-
-
-fileobj = open('examples/geeks.cpp')
-parser = CPPParser(fileobj)
-public_methods = parser.detect_public_methods()
-parser.print_detected_method_info(public_methods)
