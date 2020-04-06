@@ -2,7 +2,7 @@ import sys
 from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file
 
-#save the file argument to a variable
+# save the file argument to a variable
 filename = sys.argv[1]
 
 if len(sys.argv) > 2 and sys.argv[2].lower() == "full":
