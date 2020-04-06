@@ -53,7 +53,7 @@ def make_full_file(filename, transfer_class_to_new_file=False):
 
     cpp.add_include("iostream")
     cpp.add_include("gtest/gtest.h")
-    cpp.add_include("gmock/gmock.h")
+    cpp.add_include("\"gmock/gmock.h\"")
 
     # Adds class to file or includes class it came from
     # leaving this functionality out for now, can cause complications that we cannot fix yet
