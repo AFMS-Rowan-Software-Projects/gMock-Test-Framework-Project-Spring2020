@@ -11,6 +11,8 @@ PUBLIC_BLOCK_EXP = r'public:.*[\s\S]*};'
 KEYWORDS = ['const', 'virtual']
 
 
+# Given a path to a cpp file this class will provide tools to extract
+# information from the class
 class CPPParser:
     def __init__(self, cpp_file):
         self.cpp_file = cpp_file
@@ -20,6 +22,7 @@ class CPPParser:
         self.methods = []
         self.public_methods = []
 
+    # finds the class in the file
     def _parse_class(self):
         result = re.findall(CLASS_EXP, self.cpp_file.read())
         if result:
@@ -31,6 +34,7 @@ class CPPParser:
 
         return result
 
+    # extracts the class name from a class
     def _detect_class_name(self, detected_class):
         class_header = re.findall(CLASS_NAME_EXP, detected_class)[0]
         return class_header.strip().split(" ")[-1]
@@ -42,20 +46,25 @@ class CPPParser:
         self.detected_method_headers = result
         return result
 
+    # detects the return type of a method header
     def _parse_return_type(self, header):
         for word in header.split(' '):
             if word not in KEYWORDS:
                 return word
 
+    # determines if the method is virtual of a method header
     def _parse_is_virtual(self, header):
         return 'virtual' in header.split(' ')
 
+    # determines if the method is const of a method header
     def _parse_is_const(self, header):
         return 'const' in header.split(' ')
 
+    # determines the method name from a method header
     def _parse_method_name(self, header):
         return re.findall(METHOD_NAME_EXP, header)[0][:-1]
 
+    # determines the method args from a method header
     def _parse_method_args(self, header):
         match = re.findall(METHOD_ARGS_EXP, header)
         if match:
@@ -72,10 +81,12 @@ class CPPParser:
         self.detected_method_headers = result
         return result
 
+    # checks to see if there is a class detected
     def _ensure_class_detected(self):
         if self.detected_class is None:
             self._parse_class()
 
+    # converts method headers to a DetectedMethod object
     def _convert_headers_to_detect_methods(self, headers):
         result = []
         for header in headers:
@@ -126,6 +137,7 @@ class CPPParser:
         self.public_methods = self._convert_headers_to_detect_methods(headers)
 
 
+# a class that holds information about a method in its state
 class DetectedMethod:
     def __init__(self, return_type, name, is_virtual, is_constant, params):
         self.return_type = return_type
