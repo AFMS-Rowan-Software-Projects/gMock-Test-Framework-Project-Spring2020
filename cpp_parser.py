@@ -92,6 +92,10 @@ class CPPParser:
             print('Parameters: {}'.format(method.params))
             print('')
 
+    # RETURNS THE BASE CLASS
+    def generate(self):
+        return self.detected_class + '\n\n'
+
 
 class DetectedMethod:
     def __init__(self, return_type, name, is_virtual, is_constant, params):

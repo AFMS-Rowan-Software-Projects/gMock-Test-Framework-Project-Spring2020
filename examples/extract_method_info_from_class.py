@@ -1,6 +1,6 @@
 from cpp_parser import CPPParser
 
-file_path = r'geeks.cpp'
+file_path = r'../geeks.cpp'
 file = open(file_path, 'r')
 parser = CPPParser(file)
 parser.detect_methods()

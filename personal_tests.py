@@ -1,4 +1,4 @@
-from find_includes import find_every_include
+from full_file_creator import find_every_include, make_empty_test, make_full_file
 
 
-print(find_every_include("run_tests.cpp"))
+make_full_file("geeks.cpp", transfer_class_to_new_file=True)
