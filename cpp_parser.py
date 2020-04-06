@@ -137,7 +137,7 @@ class CPPParser:
         headers = self._parse_method_headers(public_block)
         self.public_methods = self._convert_headers_to_detect_methods(headers)
 
-    # RETURNS THE BASE CLASS
+    # RETURNS THE BASE CLASS AS TEXT
     def generate(self):
         return self.detected_class + '\n\n'
 
