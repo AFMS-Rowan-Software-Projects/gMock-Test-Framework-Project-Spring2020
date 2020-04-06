@@ -19,7 +19,7 @@ def run_tests(filename, testname=None, subtestname=None):
         if filename.endswith('.cpp'):
             subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
             temp = "run_tests"
-            will_run = assert_warning(filename, tn=testname, stn=subtestname)
+            will_run = assert_warning(filename, tn=testname if testname is not None, stn=subtestname if subtestname is not None)
         if will_run:
             if testname is None:
                 process = subprocess.check_output("./{}".format(temp))
