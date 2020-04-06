@@ -19,7 +19,7 @@ def run_tests(filename, testname=None, subtestname=None):
         if filename.endswith('.cpp'):
             subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
             temp = "run_tests"
-            will_run = assert_warning(filename, tn=testname if testname is not None, stn=subtestname if subtestname is not None)
+            will_run = assert_warning(filename, ten=testname, sten=subtestname)
         if will_run:
             if testname is None:
                 process = subprocess.check_output("./{}".format(temp))
@@ -47,7 +47,13 @@ def get_basic_stats(results):
 
 
 # Returns a bool, true if the amount of asserts is less than the max asserts
-def assert_warning(fn, tn=r".*", stn=r".*"):
+def assert_warning(fn, ten=r".*", sten=r".*"):
+    tn = r".*"
+    stn = r".*"
+    if ten is not None:
+        tn = ten
+    if sten is not None:
+        stn = sten
     f = open(fn)
     tests = re.findall(r"TEST\s*\(\s*" + tn + r"\s*,\s+" + stn + r"\s*\)\s*{[\s\S]*?}", f.read())
     f.close()
