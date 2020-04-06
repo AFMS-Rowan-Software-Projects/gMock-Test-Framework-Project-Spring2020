@@ -5,7 +5,11 @@ class CppFile:
         self.components = []
 
     def add_include(self, include):
-        self.includes.append('#include <{}>\n'.format(include))
+        # if/else checks if the include already ends with <> or ""
+        if include.endswith(">") or include.endswith("\""):
+            self.includes.append('#include {}\n'.format(include))
+        else:
+            self.includes.append('#include <{}>\n'.format(include))
 
     def add_namespace(self, namespace):
         self.namespaces.append('using namespace {};\n'.format(namespace))
@@ -19,7 +23,7 @@ class CppFile:
 
     def generate(self):
         result = ''
-        result += ''.join(self.includes) + '\n'
+        result += ''.join(self.includes) + '\n\n'
         result += ''.join(self.namespaces) + '\n'
         result += ''.join(self.components)
 
@@ -68,6 +72,10 @@ class StatementGroup:
                                              has_semicolon=False)
         return self.private_specifier
 
+    def add_white_space(self, amount=1):
+        for i in range(amount):
+            self.add_statement("", has_semicolon=False)
+
     def add_comment(self, comment):
         slashes_with_comment = '// ' + comment
         self.add_statement(slashes_with_comment, has_semicolon=False)
@@ -88,11 +96,13 @@ class StatementGroup:
 
     def add_nice_mock(self):
         self.add_statement('NiceMock<mock_class_name> var_name')
+
     def add_nice_mock(self, class_name):
         self.add_statement("NiceMock<" + class_name + "> var_name")
 
     def add_strict_mock(self):
         self.add_statement('StrictMock<mock_class_name> var_name')
+
     def add_strict_mock(self, class_name):
         self.add_statement("StrictMock<" + class_name + "> var_name")
 

@@ -7,6 +7,7 @@ METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(c
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
 
+
 KEYWORDS = ['const', 'virtual']
 
 
@@ -90,6 +91,10 @@ class CPPParser:
             print('Is constant: {}'.format(method.is_constant))
             print('Parameters: {}'.format(method.params))
             print('')
+
+    # RETURNS THE BASE CLASS
+    def generate(self):
+        return self.detected_class + '\n\n'
 
 
 class DetectedMethod:

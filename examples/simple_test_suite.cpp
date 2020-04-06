@@ -5,6 +5,30 @@ using namespace std;
 
 TEST(MyTestSuite, TestOne) {
 	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+}
+
+TEST(MyTestSuite, TestTwo) {
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
+	ASSERT_EQ(1, 1);
 }
 
 int main(int argc, char **argv) {
