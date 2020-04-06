@@ -62,9 +62,11 @@ def assert_warning(fn, ten=r".*", sten=r".*"):
     can_run = True
     for t in tests:
         length = len(re.findall(r"ASSERT", t))
-        if length > int(config['run_settings']['max_asserts']):
+        # config still need more work, file path stuff int(config['run_settings']['max_asserts']):
+        # int(config['run_settings']['assert_warning'])
+        if length > 20:
             print("ERROR: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has too many asserts, not running tests!", 'red')
             can_run = False
-        elif length > int(config['run_settings']['assert_warning']):
+        elif length > 5:
             print("WARNING: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has a lot of asserts.")
     return can_run
