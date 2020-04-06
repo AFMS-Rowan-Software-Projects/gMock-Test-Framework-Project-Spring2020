@@ -57,8 +57,8 @@ def assert_warning(fn, ten=r".*", sten=r".*"):
     f = open(fn)
     tests = re.findall(r"TEST\s*\(\s*" + tn + r"\s*,\s+" + stn + r"\s*\)\s*{[\s\S]*?}", f.read())
     f.close()
-    config = configparser.ConfigParser()
-    config.read('config.ini')
+    # config = configparser.ConfigParser()
+    # config.read('config.ini')
     can_run = True
     for t in tests:
         length = len(re.findall(r"ASSERT", t))
