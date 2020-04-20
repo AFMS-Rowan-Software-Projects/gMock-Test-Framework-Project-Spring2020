@@ -47,8 +47,8 @@ def make_full_file(filename, transfer_class_to_new_file=False):
                            m.is_virtual, m.is_constant)
 
     # Generate Tests
-    for i in range(len(parser.public_methods)):
-        cpp.add_component(make_empty_test(parser.detected_class_name, parser.public_methods[i].name + str(i)))
+    for i in range(len(parser.methods)):
+        cpp.add_component(make_empty_test(parser.detected_class_name, parser.methods[i].name + str(i)))
 
 
     cpp.add_include("iostream")
