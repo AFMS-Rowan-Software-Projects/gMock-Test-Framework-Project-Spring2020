@@ -44,7 +44,7 @@ def make_full_file(filename, transfer_class_to_new_file=False):
     for m in parser.methods:
         params = [] if not m.params else m.params
         mc.add_mock_method(m.return_type, m.name, params,
-                                   m.is_virtual, m.is_constant)
+                           m.is_virtual, m.is_constant)
 
     # Generate Tests
     for i in range(len(parser.public_methods)):
