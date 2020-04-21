@@ -23,6 +23,7 @@ def run_tests(filename, testname=None, subtestname=None):
         if will_run:
             if testname is None:
                 process = subprocess.check_output("./{}".format(temp))
+                process.wait(timeout=5)
                 subprocess.call("./{}".format(temp))
             else:
                 if subtestname is None:
