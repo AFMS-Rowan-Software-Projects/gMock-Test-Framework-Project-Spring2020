@@ -10,16 +10,22 @@ def create_mock_class_from_file(file_obj):
     parser.detect_methods()
 
     # create mock class
-    mock_class = MockClass(parser.detected_class_name)
-    for m in parser.methods:
-        params = [] if not m.params else m.params
-        mock_class.add_mock_method(m.return_type, m.name, params,
-                                   m.is_virtual, m.is_constant)
+    mock_class = create_mock_class(parser)
 
     # write mock class to file
     mock_file = CppFile()
     mock_file.add_component(mock_class.get_class())
     mock_file.write_to_file(mock_class.name)
+
+
+def create_mock_class(parser):
+    # create mock class
+    mock_class = MockClass(parser.detected_class_name)
+    for m in parser.methods:
+        params = [] if not m.params else m.params
+        mock_class.add_mock_method(m.return_type, m.name, params,
+                                   m.is_virtual, m.is_constant)
+    return mock_class
 
 
 class MockClass:

@@ -1,7 +1,7 @@
 import re
 from cpp_gen import MacroFunction, CppFile, Function
 from cpp_parser import CPPParser, DetectedMethod
-from mockclass_gen import MockClass
+from mockclass_gen import MockClass, create_mock_class
 
 
 def find_every_include(file, isfilename=True, delete_keyword=False):
@@ -40,11 +40,7 @@ def make_full_file(filename, transfer_class_to_new_file=False):
     file.close()
 
     # Generate mock class
-    mc = MockClass(parser.detected_class_name)
-    for m in parser.methods:
-        params = [] if not m.params else m.params
-        mc.add_mock_method(m.return_type, m.name, params,
-                           m.is_virtual, m.is_constant)
+    mc = create_mock_class(parser)
 
     # Generate Tests
     for i in range(len(parser.methods)):
