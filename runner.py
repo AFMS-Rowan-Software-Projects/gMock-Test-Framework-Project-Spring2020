@@ -76,7 +76,7 @@ def assert_warning(fn, ten=r".*", sten=r".*"):
 # command should be an array of arguements,
 # like ["./{}".format(temp), "--gtest_filter={}.{}*".format(testname, subtestname)]
 def run_with_max_time(command, timeout):
-    p = subprocess.call(command)
+    p = subprocess.Popen(command, shell=False)
 
     while timeout > 0:
         print(timeout)
