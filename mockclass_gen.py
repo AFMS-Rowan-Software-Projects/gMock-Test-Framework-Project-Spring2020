@@ -1,5 +1,6 @@
 from cpp_gen import CppClass, CppFile
 from cpp_parser import CPPParser
+import os
 
 
 def create_mock_class_from_file(file_obj):
@@ -18,11 +19,43 @@ def create_mock_class_from_file(file_obj):
     mock_file.write_to_file(mock_class.name)
 
 
+def is_cpp_keyword(word):
+    keywords = ['bool', 'char', 'char16_t', 'char32_t', 'double', 'float',
+                'int', 'long', 'short', 'signed', 'unsigned',
+                'void', 'wchar_t']
+    return word in keywords
+
+
+# checks to see if mock file exists (assumes naming convention)
+def is_class_mocked(name):
+    return class_file_exists(name)
+
+
+def class_file_exists(name, path="."):
+    return name in os.listdir(path)
+
+
+# if type was already mocked it will do nothing
+def mock_user_defined_type(user_type):
+    if not is_cpp_keyword(user_type) and not is_class_mocked(user_type):
+        print('ATTEMPTING TO CREATE FILENAME')
+        print('type: {}, value: {}'.format(type(user_type), user_type))
+        filename = user_type + ".cpp"
+        if class_file_exists(filename):
+            f = open(filename, 'r')
+            create_mock_class_from_file(f)
+
+
 def create_mock_class(parser):
     # create mock class
     mock_class = MockClass(parser.detected_class_name)
     for m in parser.methods:
         params = [] if not m.params else m.params
+        for param in params:
+            # have to index the first one because param is
+            # of the form [type name]
+            mock_user_defined_type(param[0])
+        mock_user_defined_type(m.return_type)
         mock_class.add_mock_method(m.return_type, m.name, params,
                                    m.is_virtual, m.is_constant)
     return mock_class
