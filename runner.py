@@ -1,15 +1,15 @@
-import subprocess, platform, re, configparser
+import subprocess, platform, re, configparser, time
 
 totalRegex = re.compile(r'\[==========\] Running [0-9]+ test')
 passedRegex = re.compile(r'\[  PASSED  \] [0-9]+ test')
 numRegex = re.compile(r'[0-9]+')
 
 
-def run_tests(filename, testname=None, subtestname=None):
+def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
     sys = platform.system()
-    process = None
     temp = filename
     will_run = True
+    command = []
     if sys == "Windows":
         print("Does not work on windows yet.")
     elif sys == "Darwin":
@@ -21,17 +21,19 @@ def run_tests(filename, testname=None, subtestname=None):
             temp = "run_tests"
             will_run = assert_warning(filename, ten=testname, sten=subtestname)
         if will_run:
-            if testname is None:
-                process = subprocess.check_output("./{}".format(temp))
-                subprocess.call("./{}".format(temp))
-            else:
+            command.append("./{}".format(temp))
+            if testname is not None:
                 if subtestname is None:
-                    process = subprocess.check_output(["./{}".format(temp), "--gtest_filter={}.*".format(testname)])
-                    subprocess.call(["./{}".format(temp), "--gtest_filter={}.*".format(testname)])
+                    command.append("--gtest_filter={}.*".format(testname))
                 else:
-                    process = subprocess.check_output(["./{}".format(temp), "--gtest_filter={}.{}*".format(testname, subtestname)])
-                    subprocess.call(["./{}".format(temp), "--gtest_filter={}.{}*".format(testname, subtestname)])
-            get_basic_stats(process)
+                    command.append("--gtest_filter={}.{}*".format(testname, subtestname))
+
+            command.extend(gtest_flags)
+            process = run_with_max_time(command, 5)
+            if process is None:
+                print("Tests ran for longer than the maximum allotted time!")
+            else:
+                get_basic_stats(process)
     else:
         print("Does not work on your system.")
 
@@ -70,3 +72,22 @@ def assert_warning(fn, ten=r".*", sten=r".*"):
         elif length > 5:
             print("WARNING: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has a lot of asserts.")
     return can_run
+
+
+# command should be an array of arguements,
+# like ["./{}".format(temp), "--gtest_filter={}.{}*".format(testname, subtestname)]
+def run_with_max_time(command, timeout):
+    p = subprocess.Popen(command, shell=False)
+
+    while timeout > 0:
+        if p.poll() is not None:
+            return subprocess.check_output(command)
+        time.sleep(0.1)
+        timeout -= 0.1
+    else:
+        try:
+            p.kill()
+        except OSError as e:
+            if e.errno != 3:
+                raise
+    return None
