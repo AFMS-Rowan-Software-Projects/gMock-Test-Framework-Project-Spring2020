@@ -8,13 +8,15 @@ import sys
 # debug
 print(sys.argv)
 gtest_args = [a for a in sys.argv if a.startswith('--lgtest')]
-print(gtest_args)
+sys.argv = [a for a in sys.argv if not a.startswith('--lgtest')]
+print('args: {}'.format(sys.argv))
+print('gtest args: {}'.format(gtest_args))
 
 # setup flag parser
 parser = argparse.ArgumentParser()
 
 # add flags to flag parser
-parser.add_argument('filename', type=str)
+parser.add_argument('filename', type=str, required=False)
 # run options
 run_options = parser.add_mutually_exclusive_group(required=False)
 run_options.add_argument('-f', '--full', action='store_true', help="run full file creator")
