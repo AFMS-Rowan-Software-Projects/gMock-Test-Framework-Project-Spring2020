@@ -79,10 +79,15 @@ def run_with_max_time(command, timeout):
     p = subprocess.call(command)
 
     while timeout > 0:
+        print(timeout)
         if p.poll() is not None:
             return subprocess.check_output(command)
         time.sleep(0.1)
         timeout -= 0.1
     else:
-        p.kill()
+        try:
+            p.kill()
+        except OSError as e:
+            if e.errno != 3:
+                raise
     return None
