@@ -79,7 +79,6 @@ def run_with_max_time(command, timeout):
     p = subprocess.Popen(command, shell=False)
 
     while timeout > 0:
-        print(timeout)
         if p.poll() is not None:
             return subprocess.check_output(command)
         time.sleep(0.1)
