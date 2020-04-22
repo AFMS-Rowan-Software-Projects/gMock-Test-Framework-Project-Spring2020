@@ -7,7 +7,8 @@ import sys
 
 # pull out gtest flags
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest')]
-sys.argv = [a for a in sys.argv if not a.startswith('--lgtest')]
+sys.argv = [a for a in sys.argv if not a.startswith('--lgtest') or a.startswith('--gtest')
+            or a.startswith('--gmock')]
 
 # setup flag parser
 parser = argparse.ArgumentParser()
