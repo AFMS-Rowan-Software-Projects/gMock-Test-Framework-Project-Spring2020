@@ -38,8 +38,6 @@ def class_file_exists(name, path="."):
 # if type was already mocked it will do nothing
 def mock_user_defined_type(user_type):
     if not is_cpp_keyword(user_type) and not is_class_mocked(user_type):
-        print('ATTEMPTING TO CREATE FILENAME')
-        print('type: {}, value: {}'.format(type(user_type), user_type))
         filename = user_type + ".cpp"
         if class_file_exists(filename):
             f = open(filename, 'r')
