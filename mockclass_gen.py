@@ -42,7 +42,8 @@ def mock_user_defined_type(user_type):
         print('type: {}, value: {}'.format(type(user_type), user_type))
         filename = user_type + ".cpp"
         if class_file_exists(filename):
-            create_mock_class_from_file(filename)
+            f = open(filename, 'r')
+            create_mock_class_from_file(f)
 
 
 def create_mock_class(parser):
