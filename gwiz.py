@@ -4,6 +4,10 @@ from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file
 from runner import run_tests
 
+# debug
+import sys
+print(sys.argv)
+
 # setup flag parser
 parser = argparse.ArgumentParser()
 
