@@ -5,7 +5,7 @@ passedRegex = re.compile(r'\[  PASSED  \] [0-9]+ test')
 numRegex = re.compile(r'[0-9]+')
 
 
-def run_tests(filename, testname=None, subtestname=None):
+def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
     sys = platform.system()
     temp = filename
     will_run = True
@@ -28,6 +28,7 @@ def run_tests(filename, testname=None, subtestname=None):
                 else:
                     command.append("--gtest_filter={}.{}*".format(testname, subtestname))
 
+            command.extend(gtest_flags)
             process = run_with_max_time(command, 5)
             if process is None:
                 print("Tests ran for longer than the maximum allotted time!")
