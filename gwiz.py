@@ -16,7 +16,7 @@ print('gtest args: {}'.format(gtest_args))
 parser = argparse.ArgumentParser()
 
 # add flags to flag parser
-parser.add_argument('filename', type=str, required=False)
+parser.add_argument('filename', type=str)
 # run options
 run_options = parser.add_mutually_exclusive_group(required=False)
 run_options.add_argument('-f', '--full', action='store_true', help="run full file creator")
