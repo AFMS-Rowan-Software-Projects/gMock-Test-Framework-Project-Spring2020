@@ -5,12 +5,9 @@ from full_file_creator import make_full_file
 from runner import run_tests
 import sys
 
-# debug
-print(sys.argv)
-gtest_args = [a for a in sys.argv if a.startswith('--lgtest')]
+# pull out gtest flags
+gtest_flags = [a for a in sys.argv if a.startswith('--lgtest')]
 sys.argv = [a for a in sys.argv if not a.startswith('--lgtest')]
-print('args: {}'.format(sys.argv))
-print('gtest args: {}'.format(gtest_args))
 
 # setup flag parser
 parser = argparse.ArgumentParser()
@@ -37,7 +34,7 @@ else:
 if args.run:
     test = None
     subtest = None
-    run_tests(filename, test, subtest)
+    run_tests(filename, test, subtest, gtest_flags)
 if args.test:
     test = args.test
     subtest = None
