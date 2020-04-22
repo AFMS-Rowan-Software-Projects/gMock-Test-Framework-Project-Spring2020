@@ -50,6 +50,7 @@ def create_mock_class(parser):
         params = [] if not m.params else m.params
         for param in params:
             mock_user_defined_type(param)
+        print('type: {}, value: {}'.format(type(m.return_type), m.return_type))
         mock_user_defined_type(m.return_type)
         mock_class.add_mock_method(m.return_type, m.name, params,
                                    m.is_virtual, m.is_constant)
