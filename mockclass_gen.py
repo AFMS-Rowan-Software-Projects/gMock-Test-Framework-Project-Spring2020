@@ -38,6 +38,8 @@ def class_file_exists(name, path="."):
 # if type was already mocked it will do nothing
 def mock_user_defined_type(user_type):
     if not is_cpp_keyword(user_type) and not is_class_mocked(user_type):
+        print('ATTEMPTING TO CREATE FILENAME')
+        print('type: {}, value: {}'.format(type(user_type), user_type))
         filename = user_type + ".cpp"
         if class_file_exists(filename):
             create_mock_class_from_file(filename)
@@ -50,7 +52,6 @@ def create_mock_class(parser):
         params = [] if not m.params else m.params
         for param in params:
             mock_user_defined_type(param)
-        print('type: {}, value: {}'.format(type(m.return_type), m.return_type))
         mock_user_defined_type(m.return_type)
         mock_class.add_mock_method(m.return_type, m.name, params,
                                    m.is_virtual, m.is_constant)
