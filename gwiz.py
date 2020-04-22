@@ -3,10 +3,12 @@ import argparse
 from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file
 from runner import run_tests
+import sys
 
 # debug
-import sys
 print(sys.argv)
+gtest_args = [a for a in sys.argv if a.startswith('--lgtest')]
+print(gtest_args)
 
 # setup flag parser
 parser = argparse.ArgumentParser()
