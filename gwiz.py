@@ -8,8 +8,7 @@ import sys
 # pull out gtest flags
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
             or a.startswith('--gmock')]
-sys.argv = [a for a in sys.argv if not a.startswith('--lgtest') or not a.startswith('--gtest')
-            or not a.startswith('--gmock')]
+sys.argv = list(set(sys.argv) - set(gtest_flags))
 print('gtest_flags: {}'.format(gtest_flags))
 print('flags: {}'.format(sys.argv))
 
