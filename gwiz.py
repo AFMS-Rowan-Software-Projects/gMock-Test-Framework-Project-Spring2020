@@ -4,6 +4,14 @@ from find_gMock_files import find
 from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file
 from runner import run_tests
+import sys
+
+# pull out gtest flags
+gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
+            or a.startswith('--gmock')]
+sys.argv = [a for a in sys.argv if a not in gtest_flags]
+print('gtest_flags: {}'.format(gtest_flags))
+print('flags: {}'.format(sys.argv))
 
 # setup flag parser
 parser = argparse.ArgumentParser()
@@ -18,6 +26,8 @@ run_options.add_argument('-r', '--run', action='store_true', help="run all tests
 run_options.add_argument('-t', '--test', type=str, help="run the specified test suite")
 run_options.add_argument('-s', '--subtest', type=str, nargs=2, help="run the specified subtest of the test suite")
 run_options.add_argument('-l', '--show', action='store_true',  help="list all gMock files in directory")
+run_options.add_argument('-step', action='store_true', help="create mock class from class using the step through "
+                                                            "format")
 
 # parse args and get filename
 args = parser.parse_args()
@@ -46,3 +56,5 @@ if args.subtest:
     run_tests(filename, test, subtest)
 if args.show:
     find()
+if args.step:
+    raise NotImplementedError()
