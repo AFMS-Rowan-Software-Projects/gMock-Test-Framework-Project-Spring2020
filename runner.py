@@ -33,7 +33,8 @@ def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
             if process is None:
                 print("Tests ran for longer than the maximum allotted time!")
             else:
-                get_basic_stats(process)
+                if "--gtest_list_tests" not in gtest_flags:
+                    get_basic_stats(process)
     else:
         print("Does not work on your system.")
 
