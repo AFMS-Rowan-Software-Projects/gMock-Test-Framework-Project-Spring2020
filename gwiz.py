@@ -10,6 +10,8 @@ gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('
             or a.startswith('--gmock')]
 sys.argv = [a for a in sys.argv if not a.startswith('--lgtest') or not a.startswith('--gtest')
             or not a.startswith('--gmock')]
+print('gtest_flags: {}'.format(gtest_flags))
+print('flags: {}'.format(sys.argv))
 
 # setup flag parser
 parser = argparse.ArgumentParser()
