@@ -17,9 +17,14 @@ def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
     elif sys == "Linux" or sys == "Unix":
         # if the file name has a .cpp, then compile, if not, just run it
         if filename.endswith('.cpp'):
-            subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
+            complie = subprocess.check_output(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
+            print(complie)
             temp = "run_tests"
-            will_run = assert_warning(filename, ten=testname, sten=subtestname)
+            if complie == "":
+                will_run = assert_warning(filename, ten=testname, sten=subtestname)
+            else:
+                will_run = False
+                print(compile)
         if will_run:
             command.append("./{}".format(temp))
             if testname is not None:
