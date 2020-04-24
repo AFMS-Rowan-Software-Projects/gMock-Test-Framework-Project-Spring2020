@@ -8,7 +8,6 @@ METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
 PUBLIC_BLOCK_EXP = r'public:.*[\s\S]*};'
 
-
 KEYWORDS = ['const', 'virtual']
 
 
@@ -109,6 +108,10 @@ class CPPParser:
             self.detected_method_headers))
 
         return self.methods
+
+    def detect_class(self):
+        self._parse_class()
+        self._detect_class_name(self.detected_class)
 
     # Print out the info for detect methods class
     def print_detected_method_info(self, methods):
