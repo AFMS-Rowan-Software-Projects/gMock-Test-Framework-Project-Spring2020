@@ -7,7 +7,7 @@
 from cpp_gen import CppFile, Function, MacroFunction
 
 
-def start_step_through_format(mock_class, methods, filename="MyTestSuite"):
+def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
     test_suite_name = input('Enter test suite name: ')
 
     # start creation of file
@@ -16,6 +16,7 @@ def start_step_through_format(mock_class, methods, filename="MyTestSuite"):
     # add includes
     cpp.add_include('iostream')
     cpp.add_include('gtest/gtest.h')
+    cpp.add_include("{}.cpp".format(mock_class_name))
 
     # create a test for each method
     for m in methods:
