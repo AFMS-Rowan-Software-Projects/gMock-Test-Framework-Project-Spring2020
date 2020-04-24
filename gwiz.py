@@ -4,7 +4,6 @@ from find_gMock_files import find
 from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file
 from runner import run_tests
-import sys
 
 # pull out gtest flags
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
