@@ -23,7 +23,6 @@ def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
                 will_run = assert_warning(filename, ten=testname, sten=subtestname)
             else:
                 will_run = False
-                print(compile)
         if will_run:
             command.append("./{}".format(temp))
             if testname is not None:
