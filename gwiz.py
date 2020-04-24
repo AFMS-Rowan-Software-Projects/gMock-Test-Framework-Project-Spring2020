@@ -1,9 +1,10 @@
 import sys
 import argparse
 from find_gMock_files import find
-from mockclass_gen import create_mock_class_from_file
+from mockclass_gen import create_mock_class
 from full_file_creator import make_full_file
 from runner import run_tests
+from step_through_format import start_step_through_format
 
 # setup flag parser
 parser = argparse.ArgumentParser()
@@ -18,6 +19,8 @@ run_options.add_argument('-r', '--run', action='store_true', help="run all tests
 run_options.add_argument('-t', '--test', type=str, help="run the specified test suite")
 run_options.add_argument('-s', '--subtest', type=str, nargs=2, help="run the specified subtest of the test suite")
 run_options.add_argument('-l', '--show', action='store_true',  help="list all gMock files in directory")
+run_options.add_argument('-step', action='store_true', help="create mock class from class using the step through "
+                                                            "format")
 
 # parse args and get filename
 args = parser.parse_args()
@@ -28,7 +31,7 @@ if args.full:
     make_full_file(filename).write_to_file("MOCK_" + filename)
 if args.create_from_class:
     fp = open(filename)
-    mock_class_file = create_mock_class_from_file(fp)
+    create_mock_class(fp)
 if args.run:
     test = None
     subtest = None
@@ -46,3 +49,8 @@ if args.subtest:
     run_tests(filename, test, subtest)
 if args.show:
     find()
+if args.step:
+    fp = open(filename)
+    mock_class = create_mock_class(fp, write_to_disk=False)
+    start_step_through_format(mock_class)
+
