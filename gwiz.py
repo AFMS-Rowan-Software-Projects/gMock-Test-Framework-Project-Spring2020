@@ -1,7 +1,7 @@
 import sys
 import argparse
 from find_gMock_files import find
-from mockclass_gen import create_mock_class
+from mockclass_gen import create_mock_class, create_mock_class_new, parse_cpp_file
 from full_file_creator import make_full_file
 from runner import run_tests
 from step_through_format import start_step_through_format
@@ -50,7 +50,9 @@ if args.subtest:
 if args.show:
     find()
 if args.step:
-    fp = open(filename)
-    mock_class = create_mock_class(fp, write_to_disk=False)
-    start_step_through_format(mock_class)
+    file_obj = open(filename)
+    parser = parse_cpp_file(file_obj)
+    methods = parser.detect_methods()
+    mock_class = create_mock_class_new(parser.detected_class_name, methods, write_to_disk=False)
+    start_step_through_format(mock_class, methods)
 
