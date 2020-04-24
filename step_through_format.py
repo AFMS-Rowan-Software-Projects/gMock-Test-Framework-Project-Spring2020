@@ -7,7 +7,7 @@
 from cpp_gen import CppFile, Function, MacroFunction
 
 
-def start_step_through_format(mock_class, methods):
+def start_step_through_format(mock_class, methods, filename="MyTestSuite"):
     test_suite_name = input('Enter test suite name: ')
 
     # start creation of file
@@ -21,10 +21,17 @@ def start_step_through_format(mock_class, methods):
     for m in methods:
         if input('Do you want to test the method {}? (y/n)'.format(m.name)) == "y":
             test_name = input("Enter name of test: ")
-            create_test(test_suite_name, test_name)
+            create_and_add_test(cpp, test_suite_name, test_name)
 
     # end with creating main function and write to file
+    main_function = Function('int', 'main', 'int argc', 'char **argv')
+    main_function.add_function_call('InitGoogleTest', '&argc', 'argv',
+                                    namespace='testing')
+    main_function.add_run_all_tests_and_return()
+    cpp.add_component(main_function)
+    cpp.write_to_file(filename)
 
 
-def create_test(test_suite_name, test_name):
-    test_one = MacroFunction('TEST', test_suite_name, test_name)
+def create_and_add_test(cpp_file_obj, test_suite_name, test_name):
+    test = MacroFunction('TEST', test_suite_name, test_name)
+    cpp_file_obj.add_component(test)
