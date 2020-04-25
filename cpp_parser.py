@@ -109,10 +109,6 @@ class CPPParser:
 
         return self.methods
 
-    def detect_class(self):
-        self._parse_class()
-        self._detect_class_name(self.detected_class)
-
     # Print out the info for detect methods class
     def print_detected_method_info(self, methods):
         if not methods:

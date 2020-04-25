@@ -52,7 +52,7 @@ if args.show:
 if args.step:
     file_obj = open(filename)
     parser = parse_cpp_file(file_obj)
-    parser.detect_class()
+    parser._parse_class()
     methods = parser.detect_methods()
     mock_class = create_mock_class_new(parser.detected_class_name, methods, write_to_disk=False)
     start_step_through_format(mock_class, methods)
