@@ -1,8 +1,7 @@
-import sys
-import argparse
+import sys, argparse
 from find_gMock_files import find
 from mockclass_gen import create_mock_class_from_file
-from full_file_creator import make_full_file
+from full_file_creator import make_full_file, make_empty_test_suite
 from runner import run_tests
 
 # pull out gtest flags
@@ -27,6 +26,8 @@ run_options.add_argument('-s', '--subtest', type=str, nargs=2, help="run the spe
 run_options.add_argument('-l', '--show', action='store_true',  help="list all gMock files in directory")
 run_options.add_argument('-step', action='store_true', help="create mock class from class using the step through "
                                                             "format")
+run_options.add_argument('-S', '--create_test_suite',action='store_true', help="Create a simple test suite with one empty test per method in"
+                                                         "the class.")
 
 # parse args and get filename
 args = parser.parse_args()
@@ -39,14 +40,11 @@ if args.create_from_class:
     fp = open(filename)
     mock_class_file = create_mock_class_from_file(fp)
 if args.run:
-    test = None
-    subtest = None
-    run_tests(filename, test, subtest)
+    run_tests(filename)
 if args.test:
     test = args.test
-    subtest = None
     print(args.test)
-    run_tests(filename, test, subtest)
+    run_tests(filename, test)
 if args.subtest:
     subtestArgs = args.subtest
     test = subtestArgs[0]
@@ -57,3 +55,5 @@ if args.show:
     find()
 if args.step:
     raise NotImplementedError()
+if args.create_test_suite:
+    make_empty_test_suite(filename).write_to_file("SUITE_")
