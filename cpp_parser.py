@@ -8,7 +8,6 @@ METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
 PUBLIC_BLOCK_EXP = r'public:.*[\s\S]*};'
 
-
 KEYWORDS = ['const', 'virtual']
 
 

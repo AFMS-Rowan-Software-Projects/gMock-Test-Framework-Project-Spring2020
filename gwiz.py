@@ -1,9 +1,10 @@
 import sys
 import argparse
 from find_gMock_files import find
-from mockclass_gen import create_mock_class_from_file
+from mockclass_gen import create_mock_class, create_mock_class_new, parse_cpp_file
 from full_file_creator import make_full_file
 from runner import run_tests
+from step_through_format import start_step_through_format
 
 # pull out gtest flags
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
@@ -37,7 +38,7 @@ if args.full:
     make_full_file(filename).write_to_file("MOCK_" + filename)
 if args.create_from_class:
     fp = open(filename)
-    mock_class_file = create_mock_class_from_file(fp)
+    create_mock_class(fp)
 if args.run:
     test = None
     subtest = None
@@ -56,4 +57,10 @@ if args.subtest:
 if args.show:
     find()
 if args.step:
-    raise NotImplementedError()
+    file_obj = open(filename)
+    parser = parse_cpp_file(file_obj)
+    parser._parse_class()
+    methods = parser.detect_methods()
+    mock_class = create_mock_class_new(parser.detected_class_name, methods)
+    start_step_through_format(parser.detected_class_name, methods)
+
