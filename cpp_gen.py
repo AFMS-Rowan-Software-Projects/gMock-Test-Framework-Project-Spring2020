@@ -116,7 +116,7 @@ class StatementGroup:
         self.add_function_call('ASSERT_GE', val_1, val_2)
 
     def add_expect_true(self, condition='condition'):
-        self.add_function_call('ASSERT_TRUE', condition)
+        self.add_function_call('EXPECT_TRUE', condition)
 
     def add_expect_false(self, condition='condition'):
         self.add_function_call('EXPECT_FALSE', condition)
