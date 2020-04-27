@@ -91,14 +91,53 @@ class StatementGroup:
         params_as_str = convert_params_to_str(params)
         self.add_statement('{}({})'.format(name, params_as_str))
 
-    def add_assert_eq(self, val_1='val_1', val_2='val_2'):
-        self.add_function_call('ASSERT_EQ', val_1, val_2)
-
     def add_assert_true(self, condition='condition'):
         self.add_function_call('ASSERT_TRUE', condition)
 
     def add_assert_false(self, condition='condition'):
         self.add_function_call('ASSERT_FALSE', condition)
+
+    def add_assert_eq(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_EQ', val_1, val_2)
+
+    def add_assert_ne(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_NE', val_1, val_2)
+
+    def add_assert_lt(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_LT', val_1, val_2)
+
+    def add_assert_le(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_LE', val_1, val_2)
+
+    def add_assert_gt(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_GT', val_1, val_2)
+
+    def add_assert_ge(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('ASSERT_GE', val_1, val_2)
+
+    def add_expect_true(self, condition='condition'):
+        self.add_function_call('ASSERT_TRUE', condition)
+
+    def add_expect_false(self, condition='condition'):
+        self.add_function_call('EXPECT_FALSE', condition)
+
+    def add_expect_eq(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_EQ', val_1, val_2)
+
+    def add_expect_ne(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_NE', val_1, val_2)
+
+    def add_expect_lt(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_LT', val_1, val_2)
+
+    def add_expect_le(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_LE', val_1, val_2)
+
+    def add_expect_gt(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_GT', val_1, val_2)
+
+    def add_expect_ge(self, val_1='val_1', val_2='val_2'):
+        self.add_function_call('EXPECT_GE', val_1, val_2)
 
     def add_nice_mock(self):
         self.add_statement('NiceMock<mock_class_name> var_name')
