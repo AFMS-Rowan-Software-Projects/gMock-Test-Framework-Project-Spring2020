@@ -38,7 +38,7 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
                 'EXPECT_NE': test.add_expect_ne,
                 'EXPECT_LE': test.add_expect_le,
                 'EXPECT_GT': test.add_expect_gt,
-                'EXPECT_GE': test.add_expect_gt
+                'EXPECT_GE': test.add_expect_ge
             }
 
             entering_statements = True
