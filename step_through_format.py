@@ -22,7 +22,25 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
     for m in methods:
         if input('Do you want to test the method {}? (y/n)'.format(m.name)) == "y":
             test_name = input("Enter name of test: ")
-            create_and_add_test(cpp, test_suite_name, test_name)
+
+            test = MacroFunction('TEST', test_suite_name, test_name)
+            statements = [
+                'ASSERT_TRUE(condition)',
+                'ASSERT_FALSE(condition)'
+            ]
+            entering_statements = True
+            while entering_statements:
+                print('Would you like to include any of the following statements?')
+                print('Enter -1 for none of these')
+                for index, k in enumerate(statements):
+                    print('{}. {}'.format(index, k))
+                response = int(input())
+                if response == -1:
+                    entering_statements = False
+                else:
+                    test.add_assert_eq('val_1', 'val_2')
+
+            cpp.add_component(test)
 
     # end with creating main function and write to file
     main_function = Function('int', 'main', 'int argc', 'char **argv')
@@ -32,7 +50,3 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
     cpp.add_component(main_function)
     cpp.write_to_file(filename)
 
-
-def create_and_add_test(cpp_file_obj, test_suite_name, test_name):
-    test = MacroFunction('TEST', test_suite_name, test_name)
-    cpp_file_obj.add_component(test)
