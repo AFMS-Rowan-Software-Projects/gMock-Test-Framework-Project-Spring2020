@@ -4,11 +4,11 @@ using namespace std;
 class Rectangle {
     int width, height;
   public:
-    void set_values(int x, int y) {
+    void set_values(unsigned int x, int y) {
         width = x;
         height = y;
     }
-    int area() {return width*height;}
+    unsigned int area() {return width*height;}
 };
 
 int square(int i)

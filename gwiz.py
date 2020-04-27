@@ -1,4 +1,5 @@
-import sys, argparse
+import sys
+import argparse
 from find_gMock_files import find
 from mockclass_gen import create_mock_class_from_file
 from full_file_creator import make_full_file, make_empty_test_suite

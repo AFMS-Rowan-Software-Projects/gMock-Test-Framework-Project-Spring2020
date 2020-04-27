@@ -57,7 +57,7 @@ class CPPParser:
         for wordnum in range(0, len(temp)):
             word = temp[wordnum]
             if word not in KEYWORDS:
-                if word is "unsigned":
+                if word == "unsigned":
                     return word + " " + temp[wordnum + 1]
                 else:
                     return word
