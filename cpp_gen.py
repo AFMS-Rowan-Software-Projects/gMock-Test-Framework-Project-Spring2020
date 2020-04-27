@@ -91,8 +91,14 @@ class StatementGroup:
         params_as_str = convert_params_to_str(params)
         self.add_statement('{}({})'.format(name, params_as_str))
 
-    def add_assert_eq(self, val_1, val_2):
+    def add_assert_eq(self, val_1='val_1', val_2='val_2'):
         self.add_function_call('ASSERT_EQ', val_1, val_2)
+
+    def add_assert_true(self, condition='condition'):
+        self.add_function_call('ASSERT_TRUE', condition)
+
+    def add_assert_false(self, condition='condition'):
+        self.add_function_call('ASSERT_FALSE', condition)
 
     def add_nice_mock(self):
         self.add_statement('NiceMock<mock_class_name> var_name')

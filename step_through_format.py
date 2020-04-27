@@ -28,6 +28,10 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
                 'ASSERT_TRUE(condition)',
                 'ASSERT_FALSE(condition)'
             ]
+            statements = {
+                'ASSERT_TRUE(condition)': test.add_assert_eq,
+                'ASSERT_FALSE(condition)': test.add_assert_eq
+            }
             entering_statements = True
             while entering_statements:
                 print('Would you like to include any of the following statements?')
@@ -38,7 +42,8 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
                 if response == -1:
                     entering_statements = False
                 else:
-                    test.add_assert_eq('val_1', 'val_2')
+                    # test.add_assert_eq('val_1', 'val_2')
+                    pass
 
             cpp.add_component(test)
 
