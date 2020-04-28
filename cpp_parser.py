@@ -26,16 +26,19 @@ class CPPParser:
         self.public_methods = []
         self.protected_methods = []
         self.superclasses = []
+        self.includes = []
 
     # finds the class in the file
     def _parse_class(self):
-        result = re.findall(CLASS_EXP, self.cpp_file.read())
+        file_text = self.cpp_file.read()
+        self.includes = re.findall(r'#include .*[">]\n', file_text)
+        result = re.findall(CLASS_EXP, file_text)
         if result:
             self.detected_class = result[0]
             self.detected_class_name = self._detect_class_name(
                 self.detected_class)
-        else:
-            raise ValueError('No class detected in file')
+        # else:
+        #    raise ValueError('No class detected in file')
 
         return result
 
@@ -99,7 +102,7 @@ class CPPParser:
         return result
 
     # checks to see if there is a class detected
-    def _ensure_class_detected(self):
+    def ensure_class_detected(self):
         if self.detected_class is None:
             self._parse_class()
 
@@ -119,7 +122,7 @@ class CPPParser:
 
     # detects methods from class
     def detect_methods(self):
-        self._ensure_class_detected()
+        self.ensure_class_detected()
         self._parse_method_headers(self.detected_class)
         self.methods.extend(self._convert_headers_to_detect_methods(
             self.detected_method_headers))
@@ -142,7 +145,7 @@ class CPPParser:
 
     # detects public methods from class
     def detect_public_methods(self):
-        self._ensure_class_detected()
+        self.ensure_class_detected()
         result = re.findall(PUBLIC_BLOCK_EXP, self.detected_class)
         if result:
             public_block = result[0]
@@ -151,7 +154,7 @@ class CPPParser:
 
     # detects protected methods from class
     def detect_protected_methods(self):
-        self._ensure_class_detected()
+        self.ensure_class_detected()
         result = re.findall(PROTECTED_BLOCK_EXP, self.detected_class)
         if result:
             protected_block = result[0]
@@ -163,6 +166,12 @@ class CPPParser:
         scs = re.findall(CLASS_INHERITANCE, self.detected_class)
         for c in scs:
             self.superclasses.append(c.split(" "[1]))
+
+    def has_virtual_method(self):
+        for m in self.methods:
+            if m.is_virtual:
+                return True
+        return False
 
     # RETURNS THE BASE CLASS AS TEXT
     def generate(self):
