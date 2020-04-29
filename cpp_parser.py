@@ -1,4 +1,5 @@
 import re
+from mockclass_gen import find_class_file
 
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
@@ -119,12 +120,37 @@ class CPPParser:
 
         return result
 
+    def _check_if_method_exists(self, method):
+        for m in self.methods:
+            if m.compare_methods(method):
+                return True
+        return False
+
+    # deals with inheritance semi-recursively (if there are multiple levels of inheritance)
+    def _add_superclasses(self):
+        self.detect_superclasses()
+        for superclass in self.superclasses:
+            filename = find_class_file(superclass)
+            if filename is not None:
+                par = CPPParser(open(filename))
+                par.detect_public_methods()
+                par.detect_protected_methods()
+                for pm in par.public_methods:
+                    if not self._check_if_method_exists(pm):
+                        self.public_methods.append(pm)
+                        self.methods.append(pm)
+                for pm in par.protected_methods:
+                    if not self._check_if_method_exists(pm):
+                        self.protected_methods.append(pm)
+                        self.methods.append(pm)
+
     # detects methods from class
     def detect_methods(self):
         self.ensure_class_detected()
         self._parse_method_headers(self.detected_class)
         self.methods.extend(self._convert_headers_to_detect_methods(
             self.detected_method_headers))
+        self._add_superclasses()
 
         return self.methods
 
@@ -150,6 +176,7 @@ class CPPParser:
             public_block = result[0]
             headers = self._parse_method_headers(public_block)
             self.public_methods = self._convert_headers_to_detect_methods(headers)
+        self._add_superclasses()
 
     # detects protected methods from class
     def detect_protected_methods(self):
@@ -159,6 +186,7 @@ class CPPParser:
             protected_block = result[0]
             headers = self._parse_method_headers(protected_block)
             self.protected_methods = self._convert_headers_to_detect_methods(headers)
+        self._add_superclasses()
 
     # detects superclasses in the current class
     def detect_superclasses(self):
@@ -185,3 +213,13 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
+
+    # returns true if this method and the method in the parameter have the same name, return type, and params
+    def compare_methods(self, method2):
+        if self.name != method2.name:
+            return False
+        if self.return_type != method2.return_type:
+            return False
+        for i in range(0, len(self.params)):
+            if self.params[i] != method2.params[i]:
+                return False
