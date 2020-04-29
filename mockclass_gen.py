@@ -31,7 +31,7 @@ def create_mock_class(file_obj, write_to_disk=True):
     parser.detect_methods()
 
     # create mock class
-    mock_class = MockClass(parser.detected_class_name)
+    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method)
     for m in parser.methods:
         params = [] if not m.params else m.params
         for param in params:
@@ -66,19 +66,56 @@ def class_file_exists(name, path="."):
     return name in os.listdir(path)
 
 
+# finds class in current directory
+def find_class_file(class_name):
+    if not is_cpp_keyword(class_name):
+        if class_file_exists(class_name + ".h"):
+            return class_name + ".h"
+        elif class_file_exists(class_name + ".cpp"):
+            return class_name + ".cpp"
+        else:
+            for root, dirs, files in os.walk("."):
+                for file in files:
+                    if file.endswith(".cpp") or file.endswith(".h"):
+                        par = CPPParser(open(file))
+                        par.ensure_class_detected()
+                        if par.detected_class is not None:
+                            if par.detected_class_name == class_name:
+                                return file
+    return None
+
+
 # if type was already mocked it will do nothing
 def mock_user_defined_type(user_type, write_to_disk=True):
     if not is_cpp_keyword(user_type) and not is_class_mocked(user_type):
-        filename = user_type + ".cpp"
-        if class_file_exists(filename):
+        filename = find_class_file(user_type)
+        if filename is not None:
             f = open(filename, 'r')
             create_mock_class(f, write_to_disk=write_to_disk)
 
 
+def create_mock_class(parser):
+    # create mock class
+    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method())
+    for m in parser.methods:
+        params = [] if not m.params else m.params
+        for param in params:
+            # have to index the first one because param is
+            # of the form [type name]
+            mock_user_defined_type(param[0])
+        mock_user_defined_type(m.return_type)
+        mock_class.add_mock_method(m.return_type, m.name, params,
+                                   m.is_virtual, m.is_constant)
+    return mock_class
+
+
 class MockClass:
-    def __init__(self, name):
+    def __init__(self, name, inherits=False):
         self.name = "MOCK_" + name
-        self.mock_class = CppClass(self.name)
+        if inherits:
+            self.mock_class = CppClass(self.name, name)
+        else:
+            self.mock_class = CppClass(self.name)
         self.mock_class.add_public_specifier()
 
     # return_type and name are strings, params is a list of strings, virtual and const are booleans

@@ -1,12 +1,14 @@
 import re
 
 # Regex expressions
-CLASS_EXP = r'class\s+\S+\s*{[\s\S]*?\n};?'
+CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
+CLASS_INHERITANCE = r'(?:public|protected|private)\s+\w+'
 CLASS_NAME_EXP = r'class \w+'
-METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*(\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(const\s*)*({|.*?;)'
+METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*((?:unsigned )?\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(const\s*)*({|.*?;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
-PUBLIC_BLOCK_EXP = r'public:.*[\s\S]*};'
+PUBLIC_BLOCK_EXP = r'public\s*:.*?[\s\S]*?(?:private\s*:|protected\s*:|};)'
+PROTECTED_BLOCK_EXP = r'protected\s*:.*?[\s\S]*?(?:private\s*:|public\s*:|};)'
 
 KEYWORDS = ['const', 'virtual']
 
@@ -21,16 +23,21 @@ class CPPParser:
         self.detected_method_headers = None
         self.methods = []
         self.public_methods = []
+        self.protected_methods = []
+        self.superclasses = []
+        self.includes = []
 
     # finds the class in the file
     def _parse_class(self):
-        result = re.findall(CLASS_EXP, self.cpp_file.read())
+        file_text = self.cpp_file.read()
+        self.includes = re.findall(r'#include .*[">]\n', file_text)
+        result = re.findall(CLASS_EXP, file_text)
         if result:
             self.detected_class = result[0]
             self.detected_class_name = self._detect_class_name(
                 self.detected_class)
-        else:
-            raise ValueError('No class detected in file')
+        # else:
+        #    raise ValueError('No class detected in file')
 
         return result
 
@@ -48,9 +55,14 @@ class CPPParser:
 
     # detects the return type of a method header
     def _parse_return_type(self, header):
-        for word in header.split(' '):
+        temp = header.split()
+        for wordnum in range(0, len(temp)):
+            word = temp[wordnum]
             if word not in KEYWORDS:
-                return word
+                if word == "unsigned":
+                    return word + " " + temp[wordnum + 1]
+                else:
+                    return word
 
     # determines if the method is virtual of a method header
     def _parse_is_virtual(self, header):
@@ -81,8 +93,15 @@ class CPPParser:
         self.detected_method_headers = result
         return result
 
+    # parses protected block from block of code
+    def _parse_protected_block(self, block):
+        matches = re.findall(PROTECTED_BLOCK_EXP, block)
+        result = [''.join(r).strip() for r in matches]
+        self.detected_method_headers = result
+        return result
+
     # checks to see if there is a class detected
-    def _ensure_class_detected(self):
+    def ensure_class_detected(self):
         if self.detected_class is None:
             self._parse_class()
 
@@ -102,7 +121,7 @@ class CPPParser:
 
     # detects methods from class
     def detect_methods(self):
-        self._ensure_class_detected()
+        self.ensure_class_detected()
         self._parse_method_headers(self.detected_class)
         self.methods.extend(self._convert_headers_to_detect_methods(
             self.detected_method_headers))
@@ -125,16 +144,33 @@ class CPPParser:
 
     # detects public methods from class
     def detect_public_methods(self):
-        self._ensure_class_detected()
+        self.ensure_class_detected()
         result = re.findall(PUBLIC_BLOCK_EXP, self.detected_class)
         if result:
             public_block = result[0]
-        else:
-            raise ValueError('No public block detected in the class {}'
-                             .format(self.detected_class_name))
+            headers = self._parse_method_headers(public_block)
+            self.public_methods = self._convert_headers_to_detect_methods(headers)
 
-        headers = self._parse_method_headers(public_block)
-        self.public_methods = self._convert_headers_to_detect_methods(headers)
+    # detects protected methods from class
+    def detect_protected_methods(self):
+        self.ensure_class_detected()
+        result = re.findall(PROTECTED_BLOCK_EXP, self.detected_class)
+        if result:
+            protected_block = result[0]
+            headers = self._parse_method_headers(protected_block)
+            self.protected_methods = self._convert_headers_to_detect_methods(headers)
+
+    # detects superclasses in the current class
+    def detect_superclasses(self):
+        scs = re.findall(CLASS_INHERITANCE, self.detected_class)
+        for c in scs:
+            self.superclasses.append(c.split(" "[1]))
+
+    def has_virtual_method(self):
+        for m in self.methods:
+            if m.is_virtual:
+                return True
+        return False
 
     # RETURNS THE BASE CLASS AS TEXT
     def generate(self):

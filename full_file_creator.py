@@ -72,3 +72,28 @@ def make_full_file(filename, transfer_class_to_new_file=False):
     cpp.add_component(run_tests)
 
     return cpp
+
+
+def make_empty_test_suite(filename):
+    cpp = CppFile()
+    file = open(filename)
+    parser = CPPParser(file)
+    parser.detect_methods()
+    file.close()
+
+    # Generate Tests
+    for i in range(len(parser.methods)):
+        cpp.add_component(make_empty_test(parser.detected_class_name, parser.methods[i].name + str(i)))
+
+    cpp.add_include("iostream")
+    cpp.add_include("gtest/gtest.h")
+    cpp.add_include("\"" + filename + "\"")
+
+    # Generates and adds the main for running tests, could make this a separate function
+    run_tests = Function("int", "main", "int argc", "char **argv")
+    run_tests.add_statement("testing::InitGoogleTest(&argc, argv)")
+    run_tests.add_return("RUN_ALL_TESTS()")
+
+    cpp.add_component(run_tests)
+
+    return cpp
