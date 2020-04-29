@@ -6,15 +6,15 @@ using namespace std;
 
 class PolygonOperations{
 public:
-	int Stack(Polygon* p1, Polygon* p2) {
+	int Stack(Polygon *p1, Polygon *p2) {
 		return p1->getHeight() + p2->getHeight();
 	}
 
-	int AvgArea(Polygon* p1, Polygon* p2) {
+	int AvgArea(Polygon *p1, Polygon *p2) {
 		return (p1->getArea() + p2->getArea()) / 2;
 	}
 
-	int maxArea(Polygon* p1, Polygon* p2) {
+	int maxArea(Polygon *p1, Polygon *p2) {
 		int max;
 		int p1Area = p1->getArea();
 		int p2Area = p2->getArea();
@@ -25,7 +25,7 @@ public:
 		return max;
 	}
 
-	int minArea(Polygon* p1, Polygon* p2) {
+	int minArea(Polygon *p1, Polygon *p2) {
 		int min;
 		int p1Area = p1->getArea();
 		int p2Area = p2->getArea();
