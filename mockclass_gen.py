@@ -25,13 +25,13 @@ def create_mock_class_new(class_name, methods, write_to_disk=True):
             mock_file.write_to_file(mock_class.name)
 
 
-def create_mock_class(file_obj, write_to_disk=True):
+def create_mock_class_from_file(file_obj, write_to_disk=True):
     # parse file
     parser = CPPParser(file_obj)
     parser.detect_methods()
 
     # create mock class
-    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method)
+    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method())
     for m in parser.methods:
         params = [] if not m.params else m.params
         for param in params:
@@ -91,7 +91,7 @@ def mock_user_defined_type(user_type, write_to_disk=True):
         filename = find_class_file(user_type)
         if filename is not None:
             f = open(filename, 'r')
-            create_mock_class(f, write_to_disk=write_to_disk)
+            create_mock_class_from_file(f, write_to_disk=write_to_disk)
 
 
 def create_mock_class(parser):

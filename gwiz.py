@@ -1,7 +1,7 @@
 import sys
 import argparse
 from find_gMock_files import find
-from mockclass_gen import create_mock_class, create_mock_class_new, parse_cpp_file
+from mockclass_gen import create_mock_class, create_mock_class_new, parse_cpp_file, create_mock_class_from_file
 from full_file_creator import make_full_file, make_empty_test_suite
 from runner import run_tests
 from step_through_format import start_step_through_format
