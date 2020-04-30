@@ -193,7 +193,7 @@ class CPPParser:
     def detect_superclasses(self):
         scs = re.findall(CLASS_INHERITANCE, self.detected_class)
         for c in scs:
-            self.superclasses.append(c.split(" "[1]))
+            self.superclasses.append(c.split(" ")[1])
 
     def has_virtual_method(self):
         for m in self.methods:
