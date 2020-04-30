@@ -2,6 +2,7 @@
 
 import glob, os, pathlib
 
+# Goes through directory and finds all mock classes
 def find():
     path = pathlib.Path(__file__).parent.absolute()
     os.path.dirname(path)

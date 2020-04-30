@@ -166,6 +166,7 @@ class CPPParser:
         for c in scs:
             self.superclasses.append(c.split(" "[1]))
 
+    # detemines if one or more of the method are virtual
     def has_virtual_method(self):
         for m in self.methods:
             if m.is_virtual:
