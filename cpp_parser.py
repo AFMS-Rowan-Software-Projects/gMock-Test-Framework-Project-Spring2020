@@ -221,9 +221,12 @@ class DetectedMethod:
             return False
         if self.return_type != method2.return_type:
             return False
+        if self.params is None:
+            return method2.params is None
         for i in range(0, len(self.params)):
             if self.params[i] != method2.params[i]:
                 return False
+        return True
 
 
 # These are methods from mockclass_gen.py, this gets rid of circular dependencies
