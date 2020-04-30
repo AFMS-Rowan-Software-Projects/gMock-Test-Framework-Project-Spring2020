@@ -1,5 +1,5 @@
 import re
-from mockclass_gen import find_class_file
+import os
 
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
@@ -127,6 +127,7 @@ class CPPParser:
         return False
 
     # deals with inheritance semi-recursively (if there are multiple levels of inheritance)
+    # should be called AFTER DETECTING ANY METHODS
     def _add_superclasses(self):
         self.detect_superclasses()
         for superclass in self.superclasses:
@@ -223,3 +224,34 @@ class DetectedMethod:
         for i in range(0, len(self.params)):
             if self.params[i] != method2.params[i]:
                 return False
+
+
+# These are methods from mockclass_gen.py, this gets rid of circular dependencies
+def is_cpp_keyword(word):
+    keywords = ['bool', 'char', 'char16_t', 'char32_t', 'double', 'float',
+                'int', 'long', 'short', 'signed', 'unsigned',
+                'void', 'wchar_t']
+    return word in keywords
+
+
+def class_file_exists(name, path="."):
+    return name in os.listdir(path)
+
+
+# finds class in current directory
+def find_class_file(class_name):
+    if not is_cpp_keyword(class_name):
+        if class_file_exists(class_name + ".h"):
+            return class_name + ".h"
+        elif class_file_exists(class_name + ".cpp"):
+            return class_name + ".cpp"
+        else:
+            for root, dirs, files in os.walk("."):
+                for file in files:
+                    if file.endswith(".cpp") or file.endswith(".h"):
+                        par = CPPParser(open(file))
+                        par.ensure_class_detected()
+                        if par.detected_class is not None:
+                            if par.detected_class_name == class_name:
+                                return file
+    return None
