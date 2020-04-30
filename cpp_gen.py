@@ -177,19 +177,14 @@ class StatementGroup:
     def add_expect_ge(self, val_1='val_1', val_2='val_2'):
         self.add_function_call('EXPECT_GE', val_1, val_2)
 
-    def add_nice_mock(self):
-        self.add_statement('NiceMock<mock_class_name> var_name')
-
-    def add_nice_mock(self, class_name):
+    def add_nice_mock(self, class_name='mock_class_name'):
         self.add_statement("NiceMock<" + class_name + "> var_name")
 
-    def add_strict_mock(self):
-        self.add_statement('StrictMock<mock_class_name> var_name')
-
-    def add_strict_mock(self, class_name):
+    def add_strict_mock(self, class_name='mock_class_name'):
         self.add_statement("StrictMock<" + class_name + "> var_name")
 
     # Generates all the different components making up the StatementGroup
+    # by converting them to a string
     def generate(self):
         if self.statements_before_specifiers:
             # do not change self.statements_before_specifiers incase
@@ -213,22 +208,26 @@ class StatementGroup:
              *self.statements])
 
 
+# A StatementGroup with braces and an optional semicolon
 class CodeBlock(StatementGroup):
     def __init__(self, has_semicolon=False):
         StatementGroup.__init__(self)
         self.has_semicolon = has_semicolon
 
+    # Creates a string representing the CodeBlock
     def generate(self):
         semicolon = ';' if self.has_semicolon else ''
         all_statements = StatementGroup.generate(self)
         return '{{\n{}}}{}\n\n'.format(all_statements, semicolon)
 
 
+# Represents a C++ Class
 class CppClass(CodeBlock):
     def __init__(self, name, base_class=None):
         CodeBlock.__init__(self, has_semicolon=True)
         self.header = self._generate_header(name, base_class)
 
+    # Generates the header for the C++ class
     def _generate_header(self, name, base_class):
         if base_class:
             derivation_list = ' : public {}'.format(base_class)
@@ -237,10 +236,12 @@ class CppClass(CodeBlock):
 
         return 'class {}{} '.format(name, derivation_list)
 
+    # Creates a string generating the C++ class
     def generate(self):
         return self.header + CodeBlock.generate(self)
 
 
+# Represents a function in a C++ class
 class Function(CodeBlock):
     def __init__(self, return_type, name, *params):
         CodeBlock.__init__(self)
@@ -250,10 +251,12 @@ class Function(CodeBlock):
         params_as_str = convert_params_to_str(params)
         return '{} {}({}) '.format(return_type, name, params_as_str)
 
+    # Add return statement
     def add_return(self, expression):
         return_and_expr = 'return {}'.format(expression)
         self.add_statement(return_and_expr)
 
+    # Add GTest method that runs all the tests
     def add_run_all_tests_and_return(self):
         self.add_return('RUN_ALL_TESTS()')
 
@@ -261,6 +264,8 @@ class Function(CodeBlock):
         return self.header + CodeBlock.generate(self)
 
 
+# Creates a MacroFunction in the C++ class
+# Note: MacroFunctions are handled by the C++ preprocessor
 class MacroFunction(CodeBlock):
     def __init__(self, name, *params):
         CodeBlock.__init__(self)

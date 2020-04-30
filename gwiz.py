@@ -40,7 +40,7 @@ if args.full:
     make_full_file(filename).write_to_file("MOCK_" + filename)
 if args.create_from_class:
     fp = open(filename)
-    create_mock_class(fp)
+    create_mock_class_from_file(fp)
 if args.run:
     run_tests(filename)
 if args.test:
