@@ -4,9 +4,15 @@ import re
 CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
 CLASS_INHERITANCE = r'(?:public|protected|private)\s+\w+'
 CLASS_NAME_EXP = r'class \w+'
+<<<<<<< Updated upstream
 METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*((?:unsigned )?\w+\s[\w:]+\s*\([\w\s,]*\)\s*)(const\s*)*({|.*?;)'
 METHOD_NAME_EXP = r'[\w:]+\('
 METHOD_ARGS_EXP = r'\([\w\s,]+\)'
+=======
+METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*((?:unsigned )?\w+\s[\w:]+\s*\([\w\s,*&]*\)\s*)(const\s*)*({|.*?;)'
+METHOD_NAME_EXP = r'[\w:]+\('
+METHOD_ARGS_EXP = r'\([\w\s,*&]+\)'
+>>>>>>> Stashed changes
 PUBLIC_BLOCK_EXP = r'public\s*:.*?[\s\S]*?(?:private\s*:|protected\s*:|};)'
 PROTECTED_BLOCK_EXP = r'protected\s*:.*?[\s\S]*?(?:private\s*:|public\s*:|};)'
 
