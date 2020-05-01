@@ -54,7 +54,7 @@ if args.subtest:
     subtest = subtestArgs[1]
     print(subtestArgs)
     run_tests(filename, test, subtest)
-if args.show:
+if args.list:
     find()
 if args.step:
     file_obj = open(filename)
