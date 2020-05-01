@@ -11,5 +11,5 @@ class Shape {
       }
 
    protected:
-      int width;
+      int width, height;
 };

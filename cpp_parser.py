@@ -1,4 +1,5 @@
 import re
+import os
 
 # Regex expressions
 CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
@@ -119,12 +120,38 @@ class CPPParser:
 
         return result
 
+    def _check_if_method_exists(self, method):
+        for m in self.methods:
+            if m.compare_methods(method):
+                return True
+        return False
+
+    # deals with inheritance semi-recursively (if there are multiple levels of inheritance)
+    # should be called AFTER DETECTING ANY METHODS
+    def _add_superclasses(self):
+        self.detect_superclasses()
+        for superclass in self.superclasses:
+            filename = find_class_file(superclass)
+            if filename is not None:
+                par = CPPParser(open(filename))
+                par.detect_public_methods()
+                par.detect_protected_methods()
+                for pm in par.public_methods:
+                    if not self._check_if_method_exists(pm):
+                        self.public_methods.append(pm)
+                        self.methods.append(pm)
+                for pm in par.protected_methods:
+                    if not self._check_if_method_exists(pm):
+                        self.protected_methods.append(pm)
+                        self.methods.append(pm)
+
     # detects methods from class
     def detect_methods(self):
         self.ensure_class_detected()
         self._parse_method_headers(self.detected_class)
         self.methods.extend(self._convert_headers_to_detect_methods(
             self.detected_method_headers))
+        self._add_superclasses()
 
         return self.methods
 
@@ -150,6 +177,7 @@ class CPPParser:
             public_block = result[0]
             headers = self._parse_method_headers(public_block)
             self.public_methods = self._convert_headers_to_detect_methods(headers)
+        self._add_superclasses()
 
     # detects protected methods from class
     def detect_protected_methods(self):
@@ -159,12 +187,13 @@ class CPPParser:
             protected_block = result[0]
             headers = self._parse_method_headers(protected_block)
             self.protected_methods = self._convert_headers_to_detect_methods(headers)
+        self._add_superclasses()
 
     # detects superclasses in the current class
     def detect_superclasses(self):
         scs = re.findall(CLASS_INHERITANCE, self.detected_class)
         for c in scs:
-            self.superclasses.append(c.split(" "[1]))
+            self.superclasses.append(c.split(" ")[1])
 
     # detemines if one or more of the method are virtual
     def has_virtual_method(self):
@@ -186,3 +215,47 @@ class DetectedMethod:
         self.is_virtual = is_virtual
         self.is_constant = is_constant
         self.params = params
+
+    # returns true if this method and the method in the parameter have the same name, return type, and params
+    def compare_methods(self, method2):
+        if self.name != method2.name:
+            return False
+        if self.return_type != method2.return_type:
+            return False
+        if self.params is None:
+            return method2.params is None
+        for i in range(0, len(self.params)):
+            if self.params[i] != method2.params[i]:
+                return False
+        return True
+
+
+# These are methods from mockclass_gen.py, this gets rid of circular dependencies
+def is_cpp_keyword(word):
+    keywords = ['bool', 'char', 'char16_t', 'char32_t', 'double', 'float',
+                'int', 'long', 'short', 'signed', 'unsigned',
+                'void', 'wchar_t']
+    return word in keywords
+
+
+def class_file_exists(name, path="."):
+    return name in os.listdir(path)
+
+
+# finds class in current directory
+def find_class_file(class_name):
+    if not is_cpp_keyword(class_name):
+        if class_file_exists(class_name + ".h"):
+            return class_name + ".h"
+        elif class_file_exists(class_name + ".cpp"):
+            return class_name + ".cpp"
+        else:
+            for root, dirs, files in os.walk("."):
+                for file in files:
+                    if file.endswith(".cpp") or file.endswith(".h"):
+                        par = CPPParser(open(file))
+                        par.ensure_class_detected()
+                        if par.detected_class is not None:
+                            if par.detected_class_name == class_name:
+                                return file
+    return None
