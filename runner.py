@@ -17,9 +17,9 @@ def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
     elif sys == "Linux" or sys == "Unix":
         # if the file name has a .cpp, then compile, if not, just run it
         if filename.endswith('.cpp'):
-            complie = subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
+            compile_file = subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
             temp = "run_tests"
-            if complie == 0:
+            if compile_file == 0:
                 will_run = assert_warning(filename, ten=testname, sten=subtestname)
             else:
                 will_run = False
@@ -42,11 +42,12 @@ def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
         print("Does not work on your system.")
 
 
+# Report information on the tests that ran
 def get_basic_stats(results):
     total = int(numRegex.search(totalRegex.search(str(results)).group()).group())
     passed = int(numRegex.search(passedRegex.search(str(results)).group()).group())
     if total == 0:
-        percent = 100;
+        percent = 100
     else:
         percent = (passed / total) * 100
     print("{}/{} ({}%) of the tests passed.".format(passed, total, percent))
@@ -71,14 +72,15 @@ def assert_warning(fn, ten=r".*", sten=r".*"):
         # config still need more work, file path stuff int(config['run_settings']['max_asserts']):
         # int(config['run_settings']['assert_warning'])
         if length > 20:
-            print("ERROR: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has too many asserts, not running tests!", 'red')
+            print("ERROR: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has too many asserts, not running tests!",
+                  'red')
             can_run = False
         elif length > 5:
             print("WARNING: " + re.findall(r"TEST\s*\(\s*.*\)", t)[0] + " has a lot of asserts.")
     return can_run
 
 
-# command should be an array of arguements,
+# command should be an array of arguments,
 # like ["./{}".format(temp), "--gtest_filter={}.{}*".format(testname, subtestname)]
 def run_with_max_time(command, timeout):
     p = subprocess.Popen(command, shell=False)

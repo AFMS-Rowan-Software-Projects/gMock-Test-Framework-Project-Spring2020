@@ -6,36 +6,34 @@ from full_file_creator import make_full_file, make_empty_test_suite
 from runner import run_tests
 from step_through_format import start_step_through_format
 
-# pull out gtest flags
+# Pull out flags for GTest to pass to the GTest program
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
-            or a.startswith('--gmock')]
+               or a.startswith('--gmock')]
+# Keep the other arguments that are meant for gwiz.py
 sys.argv = [a for a in sys.argv if a not in gtest_flags]
-print('gtest_flags: {}'.format(gtest_flags))
-print('flags: {}'.format(sys.argv))
 
-# setup flag parser
-parser = argparse.ArgumentParser()
-
-# add flags to flag parser
-parser.add_argument('filename', nargs='?',  type=str)
-# run options
+# define command line arguments (flags)
+parser = argparse.ArgumentParser(description="gWiz provides tools to aid in the use of GTest and GMock")
+parser.add_argument('filename', nargs='?', type=str)
 run_options = parser.add_mutually_exclusive_group(required=False)
 run_options.add_argument('-f', '--full', action='store_true', help="run full file creator")
-run_options.add_argument('-c', '--create_from_class', action='store_true', help="create mock class from class")
+run_options.add_argument('-c', '--create_from_class', action='store_true', help="generate a mock class from a .h or "
+                                                                                ".cpp source file")
 run_options.add_argument('-r', '--run', action='store_true', help="run all tests")
 run_options.add_argument('-t', '--test', type=str, help="run the specified test suite")
 run_options.add_argument('-s', '--subtest', type=str, nargs=2, help="run the specified subtest of the test suite")
-run_options.add_argument('-l', '--show', action='store_true',  help="list all gMock files in directory")
+run_options.add_argument('-l', '--list', action='store_true', help="list all gMock files in directory")
 run_options.add_argument('-step', action='store_true', help="create mock class from class using the step through "
                                                             "format")
-run_options.add_argument('-S', '--create_test_suite',action='store_true', help="Create a simple test suite with one empty test per method in"
-                                                         "the class.")
+run_options.add_argument('-S', '--create_test_suite', action='store_true',
+                         help="Create a simple test suite with one empty test per method in"
+                              "the class.")
 
 # parse args and get filename
 args = parser.parse_args()
 filename = args.filename
 
-# check flags
+# Call helper methods associate with each flag
 if args.full:
     make_full_file(filename).write_to_file("MOCK_" + filename)
 if args.create_from_class:

@@ -1,9 +1,3 @@
-# user runs command and gives class to be mocked
-# have user name test suite
-# mock the class
-# build boilerplate test suite
-# loop through mocked class' methods and insert statements
-
 from cpp_gen import CppFile, Function, MacroFunction
 
 
