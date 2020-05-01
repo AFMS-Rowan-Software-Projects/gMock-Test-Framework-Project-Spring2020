@@ -26,7 +26,7 @@ run_options.add_argument('-l', '--list', action='store_true', help="list all gMo
 run_options.add_argument('-step', action='store_true', help="create mock class from class using the step through "
                                                             "format")
 run_options.add_argument('-S', '--create_test_suite', action='store_true',
-                         help="Create a simple test suite with one empty test per method in"
+                         help="Create a simple test suite with one empty test per method in "
                               "the class.")
 
 # parse args and get filename
