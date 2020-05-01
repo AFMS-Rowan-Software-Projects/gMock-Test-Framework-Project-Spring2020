@@ -6,6 +6,9 @@ from full_file_creator import make_full_file, make_empty_test_suite
 from runner import run_tests
 from step_through_format import start_step_through_format
 
+if len(sys.argv) == 1:
+    print('[put instructions here]')
+
 # Pull out flags for GTest to pass to the GTest program
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
                or a.startswith('--gmock')]
