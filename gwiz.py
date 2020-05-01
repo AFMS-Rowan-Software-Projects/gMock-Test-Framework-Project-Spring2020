@@ -15,10 +15,6 @@ sys.argv = [a for a in sys.argv if a not in gtest_flags]
 # define command line arguments (flags)
 parser = argparse.ArgumentParser(description="gWiz provides tools to aid in the use of GTest and GMock")
 parser.add_argument('filename', nargs='?', type=str)
-
-if len(sys.argv) == 1:
-    parser.print_help()
-
 run_options = parser.add_mutually_exclusive_group(required=False)
 run_options.add_argument('-f', '--full', action='store_true', help="run full file creator")
 run_options.add_argument('-c', '--create_from_class', action='store_true', help="generate a mock class from a .h or "
@@ -36,6 +32,9 @@ run_options.add_argument('-S', '--create_test_suite', action='store_true',
 # parse args and get filename
 args = parser.parse_args()
 filename = args.filename
+
+if len(sys.argv) == 1:
+    parser.print_help()
 
 # Call helper methods associate with each flag
 if args.full:
