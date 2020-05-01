@@ -6,9 +6,6 @@ from full_file_creator import make_full_file, make_empty_test_suite
 from runner import run_tests
 from step_through_format import start_step_through_format
 
-if len(sys.argv) == 1:
-    print('[put instructions here]')
-
 # Pull out flags for GTest to pass to the GTest program
 gtest_flags = [a for a in sys.argv if a.startswith('--lgtest') or a.startswith('--gtest')
                or a.startswith('--gmock')]
@@ -18,6 +15,10 @@ sys.argv = [a for a in sys.argv if a not in gtest_flags]
 # define command line arguments (flags)
 parser = argparse.ArgumentParser(description="gWiz provides tools to aid in the use of GTest and GMock")
 parser.add_argument('filename', nargs='?', type=str)
+
+if len(sys.argv) == 1:
+    parser.print_help()
+
 run_options = parser.add_mutually_exclusive_group(required=False)
 run_options.add_argument('-f', '--full', action='store_true', help="run full file creator")
 run_options.add_argument('-c', '--create_from_class', action='store_true', help="generate a mock class from a .h or "
