@@ -14,6 +14,12 @@ PROTECTED_BLOCK_EXP = r'protected\s*:.*?[\s\S]*?(?:private\s*:|public\s*:|};)'
 KEYWORDS = ['const', 'virtual']
 
 
+def parse_cpp_file(file):
+    parser = CPPParser(file)
+    parser.detect_methods()
+    return parser
+
+
 # Given a path to a cpp file this class will provide tools to extract
 # information from the class
 class CPPParser:
