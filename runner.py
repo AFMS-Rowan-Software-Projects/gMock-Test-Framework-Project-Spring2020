@@ -6,15 +6,15 @@ numRegex = re.compile(r'[0-9]+')
 
 
 def run_tests(filename, testname=None, subtestname=None, gtest_flags=[]):
-    sys = platform.system()
+    sys_os = platform.system()
     temp = filename
     will_run = True
     command = []
-    if sys == "Windows":
+    if sys_os == "Windows":
         print("Does not work on windows yet.")
-    elif sys == "Darwin":
+    elif sys_os == "Darwin":
         print("Does not work on MAC yet.")
-    elif sys == "Linux" or sys == "Unix":
+    elif sys_os == "Linux" or sys_os == "Unix":
         # if the file name has a .cpp, then compile, if not, just run it
         if filename.endswith('.cpp'):
             compile_file = subprocess.call(["g++", filename, "-orun_tests", "-lgtest", "-lgtest_main", "-pthread"])
