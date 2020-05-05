@@ -21,8 +21,12 @@ def create_mock_class_new(class_name, methods, write_to_disk=True):
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
-        mock_class.add_mock_method(m.return_type, m.name, p,
-                                   m.is_virtual, m.is_constant)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
 
         if write_to_disk:
             mock_file = CppFile()
@@ -49,8 +53,12 @@ def create_mock_class_from_file(file_obj, write_to_disk=True):
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
-        mock_class.add_mock_method(m.return_type, m.name, p,
-                                   m.is_virtual, m.is_constant)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
 
     if write_to_disk:
         mock_file = CppFile()
@@ -75,8 +83,13 @@ def create_mock_class(parser):
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type)
-        mock_class.add_mock_method(m.return_type, m.name, p,
-                                   m.is_virtual, m.is_constant)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
+
     return mock_class
 
 
