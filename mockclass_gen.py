@@ -16,8 +16,7 @@ def create_mock_class_new(class_name, methods, write_to_disk=True):
             # have to index the first one because param is
             # of the form [type name]
             mock_user_defined_type(param[0])
-            print(param)
-            if ',' in param:
+            if ',' in param[0]:
                 p.append("(" + param + ")")
             else:
                 p.append(param)
@@ -49,8 +48,7 @@ def create_mock_class_from_file(file_obj, write_to_disk=True):
             # have to index the first one because param is
             # of the form [type name]
             mock_user_defined_type(param[0])
-            print(param)
-            if ',' in param:
+            if ',' in param[0]:
                 p.append("(" + param + ")")
             else:
                 p.append(param)
@@ -80,8 +78,7 @@ def create_mock_class(parser):
             # have to index the first one because param is
             # of the form [type name]
             mock_user_defined_type(param[0])
-            print(param)
-            if ',' in param:
+            if ',' in param[0]:
                 p.append("(" + param + ")")
             else:
                 p.append(param)
