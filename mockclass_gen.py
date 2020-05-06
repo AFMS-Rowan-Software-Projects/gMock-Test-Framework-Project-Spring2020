@@ -17,7 +17,11 @@ def create_mock_class_new(class_name, methods, write_to_disk=True):
             # of the form [type name]
             mock_user_defined_type(param[0])
             if ',' in param[0]:
-                p.append("(" + param + ")")
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
@@ -49,7 +53,11 @@ def create_mock_class_from_file(file_obj, write_to_disk=True):
             # of the form [type name]
             mock_user_defined_type(param[0])
             if ',' in param[0]:
-                p.append("(" + param + ")")
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
@@ -79,7 +87,11 @@ def create_mock_class(parser):
             # of the form [type name]
             mock_user_defined_type(param[0])
             if ',' in param[0]:
-                p.append("(" + param + ")")
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
             else:
                 p.append(param)
         mock_user_defined_type(m.return_type)
