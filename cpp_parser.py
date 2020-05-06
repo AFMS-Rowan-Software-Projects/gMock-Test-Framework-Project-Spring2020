@@ -5,9 +5,9 @@ import os
 CLASS_EXP = r'class\s+\S+\s*(?::*\s+(?:public|protected|private)\s+\S+\s*,*)*{[\s\S]*?\n};?'
 CLASS_INHERITANCE = r'(?:public|protected|private)\s+\w+'
 CLASS_NAME_EXP = r'class \w+'
-METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*((?:unsigned )?\w+\s[\w:]+\s*\([\w\s,*&]*\)\s*)(const\s*)*({|.*?;)'
+METHOD_HEADER_EXP = r'((virtual\s)*(const\s)*)*((?:unsigned )?\w+(?:<[\w\s:,<>]*>|::[\w\s:,<>]*)?\s[\w:]+\s*\([\w\s,*&:<>]*\)\s*)(const\s*)*({|.*?;)'
 METHOD_NAME_EXP = r'[\w:]+\('
-METHOD_ARGS_EXP = r'\([\w\s,*&]+\)'
+METHOD_ARGS_EXP = r'\([\w\s,*&:<>]+\)'
 PUBLIC_BLOCK_EXP = r'public\s*:.*?[\s\S]*?(?:private\s*:|protected\s*:|};)'
 PROTECTED_BLOCK_EXP = r'protected\s*:.*?[\s\S]*?(?:private\s*:|public\s*:|};)'
 
@@ -56,7 +56,7 @@ class CPPParser:
 
     # detects the return type of a method header
     def _parse_return_type(self, header):
-        temp = header.split()
+        temp = specialized_split(header)
         for wordnum in range(0, len(temp)):
             word = temp[wordnum]
             if word not in KEYWORDS:
@@ -81,7 +81,7 @@ class CPPParser:
     def _parse_method_args(self, header):
         match = re.findall(METHOD_ARGS_EXP, header)
         if match:
-            result = [i.strip().split(' ') for i in match[0][1:-1].split(',')]
+            result = [specialized_split(i.strip()) for i in specialized_split(match[0][1:-1], split_char=",")]
         else:
             result = None
 
@@ -195,7 +195,7 @@ class CPPParser:
         for c in scs:
             self.superclasses.append(c.split(" ")[1])
 
-    # detemines if one or more of the method are virtual
+    # determines if one or more of the method are virtual
     def has_virtual_method(self):
         for m in self.methods:
             if m.is_virtual:
@@ -228,6 +228,29 @@ class DetectedMethod:
             if self.params[i] != method2.params[i]:
                 return False
         return True
+
+
+# Splits the string with the split_char, not splitting if the split_char is in between oc and cc
+# returns a list of strings, ignoring what is in the ignore(should be an array of characters to ignore)
+def specialized_split(string, split_char=" ", oc="<", cc=">", ignore=None):
+    if ignore is None:
+        ignore = []
+    open_count = 0
+    wc = 0  # number of words - 1
+    result = [""]
+    for c in string:
+        if c not in ignore:
+            if c == oc:
+                open_count = open_count + 1
+            elif c == cc and open_count > 0:
+                open_count = open_count - 1
+
+            if c == split_char and open_count == 0:
+                wc = wc + 1
+                result.append("")
+            else:
+                result[wc] = result[wc] + c
+    return result
 
 
 # These are methods from mockclass_gen.py, this gets rid of circular dependencies

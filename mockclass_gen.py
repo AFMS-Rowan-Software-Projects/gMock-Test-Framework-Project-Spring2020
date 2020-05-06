@@ -11,13 +11,26 @@ def create_mock_class_new(class_name, methods, write_to_disk=True):
     mock_class = MockClass(class_name)
     for m in methods:
         params = [] if not m.params else m.params
+        p = []
         for param in params:
             # have to index the first one because param is
             # of the form [type name]
             mock_user_defined_type(param[0])
+            if ',' in param[0]:
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
+            else:
+                p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
-        mock_class.add_mock_method(m.return_type, m.name, params,
-                                   m.is_virtual, m.is_constant)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
 
         if write_to_disk:
             mock_file = CppFile()
@@ -34,18 +47,60 @@ def create_mock_class_from_file(file_obj, write_to_disk=True):
     mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method())
     for m in parser.methods:
         params = [] if not m.params else m.params
+        p = []
         for param in params:
             # have to index the first one because param is
             # of the form [type name]
             mock_user_defined_type(param[0])
+            if ',' in param[0]:
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
+            else:
+                p.append(param)
         mock_user_defined_type(m.return_type, write_to_disk=write_to_disk)
-        mock_class.add_mock_method(m.return_type, m.name, params,
-                                   m.is_virtual, m.is_constant)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
 
     if write_to_disk:
         mock_file = CppFile()
         mock_file.add_component(mock_class.get_class())
         mock_file.write_to_file(mock_class.name)
+
+    return mock_class
+
+
+def create_mock_class(parser):
+    # create mock class
+    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method())
+    for m in parser.methods:
+        params = [] if not m.params else m.params
+        p = []
+        for param in params:
+            # have to index the first one because param is
+            # of the form [type name]
+            mock_user_defined_type(param[0])
+            if ',' in param[0]:
+                temp = ["("]
+                for i in param:
+                    temp.append(i)
+                temp.append(")")
+                p.append(temp)
+            else:
+                p.append(param)
+        mock_user_defined_type(m.return_type)
+        if ',' in m.return_type:
+            mock_class.add_mock_method("(" + m.return_type + ")", m.name, p,
+                                       m.is_virtual, m.is_constant)
+        else:
+            mock_class.add_mock_method(m.return_type, m.name, p,
+                                       m.is_virtual, m.is_constant)
 
     return mock_class
 
@@ -86,27 +141,12 @@ def find_class_file(class_name):
 
 
 # if type was already mocked it will do nothing
-def mock_user_defined_type(user_type, write_to_disk=True):
-    if not is_cpp_keyword(user_type) and not is_class_mocked(user_type):
+def mock_user_defined_type(user_type, write_to_disk=True):                  # idk how x::y<w, z> would work
+    if not is_cpp_keyword(user_type) and not is_class_mocked(user_type) and "::" not in user_type:
         filename = find_class_file(user_type)
         if filename is not None:
             f = open(filename, 'r')
             create_mock_class_from_file(f, write_to_disk=write_to_disk)
-
-
-def create_mock_class(parser):
-    # create mock class
-    mock_class = MockClass(parser.detected_class_name, inherits=parser.has_virtual_method())
-    for m in parser.methods:
-        params = [] if not m.params else m.params
-        for param in params:
-            # have to index the first one because param is
-            # of the form [type name]
-            mock_user_defined_type(param[0])
-        mock_user_defined_type(m.return_type)
-        mock_class.add_mock_method(m.return_type, m.name, params,
-                                   m.is_virtual, m.is_constant)
-    return mock_class
 
 
 class MockClass:
