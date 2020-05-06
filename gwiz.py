@@ -75,4 +75,4 @@ if args.step:
     mock_class = create_mock_class_new(parser.detected_class_name, methods)
     start_step_through_format(parser.detected_class_name, methods)
 if args.create_test_suite:
-    make_empty_test_suite(filename).write_to_file("SUITE_")
+    make_empty_test_suite(filename).write_to_file("SUITE_" + filename)
