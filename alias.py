@@ -73,3 +73,6 @@ if __name__ == '__main__':
 	if args.show_file:
 		print('\ncat .bash_profile')
 		subprocess.run(f'cat {bash_profile}', shell=True)
+	
+	# Sources the .bash_profile so that the updates are applied
+	subprocess.run(f'source {bash_profile}', shell=True)
