@@ -71,6 +71,8 @@ def create_mock_class_from_file(file_obj, write_to_disk=True):
     if write_to_disk:
         mock_file = CppFile()
         mock_file.add_component(mock_class.get_class())
+        mock_file.add_include("gmock/gmock.h")
+        mock_file.add_include("\"" + file_obj.name + "\"")
         mock_file.write_to_file(mock_class.name)
 
     return mock_class
@@ -141,8 +143,8 @@ def find_class_file(class_name):
 
 
 # if type was already mocked it will do nothing
-def mock_user_defined_type(user_type, write_to_disk=True):                  # idk how x::y<w, z> would work
-    if not is_cpp_keyword(user_type) and not is_class_mocked(user_type) and "::" not in user_type:
+def mock_user_defined_type(user_type, write_to_disk=True):                  # idk how x::y<w, z> would work or templates
+    if not is_cpp_keyword(user_type) and not is_class_mocked(user_type) and "::" not in user_type and "<" not in user_type:
         filename = find_class_file(user_type)
         if filename is not None:
             f = open(filename, 'r')

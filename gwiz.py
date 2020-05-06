@@ -28,6 +28,7 @@ run_options.add_argument('-step', action='store_true', help="create mock class f
 run_options.add_argument('-S', '--create_test_suite', action='store_true',
                          help="Create a simple test suite with one empty test per method in "
                               "the class.")
+run_options.add_argument('-m', '--max_time', type=int, help="specify maximum run time of a test.")
 
 # parse args and get filename
 args = parser.parse_args()
@@ -43,17 +44,26 @@ if args.create_from_class:
     fp = open(filename)
     create_mock_class_from_file(fp)
 if args.run:
-    run_tests(filename)
+    if args.max_time:
+        run_tests(filename, mtt=args.max_time)
+    else:
+        run_tests(filename)
 if args.test:
     test = args.test
     print(args.test)
-    run_tests(filename, test)
+    if args.max_time:
+        run_tests(filename, test, mtt=args.max_time)
+    else:
+        run_tests(filename, test)
 if args.subtest:
     subtestArgs = args.subtest
     test = subtestArgs[0]
     subtest = subtestArgs[1]
     print(subtestArgs)
-    run_tests(filename, test, subtest)
+    if args.max_time:
+        run_tests(filename, test, subtest, mtt=args.max_time)
+    else:
+        run_tests(filename, test, subtest)
 if args.list:
     find()
 if args.step:
