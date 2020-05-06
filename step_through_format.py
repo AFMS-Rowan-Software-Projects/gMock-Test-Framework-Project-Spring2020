@@ -1,7 +1,7 @@
 from cpp_gen import CppFile, Function, MacroFunction
 
 
-def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
+def start_step_through_format(mock_class_name, methods):
     test_suite_name = input('Enter test suite name: ')
 
     # start creation of file
@@ -55,5 +55,5 @@ def start_step_through_format(mock_class_name, methods, filename="MyTestSuite"):
                                     namespace='testing')
     main_function.add_run_all_tests_and_return()
     cpp.add_component(main_function)
-    cpp.write_to_file(filename)
+    cpp.write_to_file(test_suite_name)
 
