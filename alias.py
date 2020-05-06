@@ -67,22 +67,21 @@ def create_parser():
 if __name__ == '__main__':
 	parser = create_parser()
 	args = parser.parse_args()
+	if args.show_file:
+		print('cat .bash_profile')
+		subprocess.run(f'cat {bash_profile}', shell=True)
+	
 	if args.create:
 		try:
 			update()
-			print('Alias Updated')
+			print('\nAlias updated for future sessions.')
+			print('Call: "source ~/.bash_profile" to add to this shell.')
 		except RuntimeError:
 			print('Your current working directory must have the gwiz modules in it.')
 			print('Please navigate to them and recall the command.')
 	elif args.remove:
 		remove()
-		print('Alias Removed')
+		print('\nAlias removed for future setions.')
+		print('Call: "unalias gwiz" to remove from this shell.')
 	elif not args.show_file:
 		parser.print_usage()
-	
-	if args.show_file:
-		print('\ncat .bash_profile')
-		subprocess.run(f'cat {bash_profile}', shell=True)
-	
-	# Sources the .bash_profile so that the updates are applied
-	subprocess.run(f'source {bash_profile}', shell=True)
